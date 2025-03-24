@@ -2,16 +2,13 @@ import { Env } from "../types.js";
 import { WeekStorage } from "./weekStorage.js";
 import { DateUtils } from "../utils/dateUtils.js";
 
-// Modelliamo l'interfaccia per riflettere la struttura reale dei dati
+// Define the new interface for daily data returned by DayService
 interface DailyData {
-  date: string;
-  total_repositories: number;
-  timestamp: string;
-  [key: string]: string | number; // Per gli indici numerici come '9993', '9994', etc.
+  [repo: string]: number; // repository name -> count (inverted index)
 }
 
 interface WeeklyData {
-  [repo: string]: number; // repository name -> count
+  [repo: string]: number; // repository name -> total count
 }
 
 export class WeekService {
@@ -49,24 +46,16 @@ export class WeekService {
           continue; // Skip to the next URL if there's an error
         }
         
-        const data = await response.json() as unknown;
+        // Parse the response data
+        const data = await response.json() as DailyData;
         
-        // Check if data is an object
-        if (data && typeof data === 'object') {
-          const objectData = data as Record<string, unknown>;
+        // Process each repository and its score from the daily data
+        for (const [repo, score] of Object.entries(data)) {
+          // Ensure score is a number
+          const numericScore = typeof score === 'number' ? score : 0;
           
-          // Processiamo tutte le chiavi tranne 'date', 'total_repositories', e 'timestamp'
-          for (const [key, value] of Object.entries(objectData)) {
-            if (key !== 'date' && key !== 'total_repositories' && key !== 'timestamp') {
-              // Qui value è il nome del repository
-              if (typeof value === 'string') {
-                // Normalizza il nome del repository (converti in minuscolo)
-                const normalizedRepoName = value.toLowerCase();
-                // Incrementa il conteggio per questo repository
-                aggregatedData[normalizedRepoName] = (aggregatedData[normalizedRepoName] || 0) + 1;
-              }
-            }
-          }
+          // Add the score to the aggregate
+          aggregatedData[repo] = (aggregatedData[repo] || 0) + numericScore;
         }
       } catch (error) {
         console.error(`Error processing URL ${url}:`, error);

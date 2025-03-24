@@ -39,14 +39,8 @@ export class DayController {
       const data = await this.dayService.getDailyStars(dateParam, limit ? parseInt(limit) : undefined);
       
       // Return response with CORS headers
-      
       return new Response(JSON.stringify(data, undefined, 2), {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type"
-        },
+        headers: headers,
       });
     } catch (error: any) {
       console.error("Error processing request:", error);
@@ -54,5 +48,32 @@ export class DayController {
         status: 500,
       });
     }
+  }
+  
+  /**
+   * Handles the special case for the current day (endpoint: /day)
+   * @param request The original request
+   * @returns Response with the current day's data
+   */
+  async handleToday(request: Request): Promise<Response> {
+    // Generate today's date in YYYY-MM-DD format
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, "0"); // Month is 0-indexed
+    const day = today.getDate().toString().padStart(2, "0");
+    const todayString = `${year}-${month}-${day}`;
+    
+    // Create a modified request with today's date
+    const url = new URL(request.url);
+    url.pathname = `/${todayString}`;
+    
+    // Create new request with the same parameters but different path
+    const todayRequest = new Request(url.toString(), {
+      method: 'GET',
+      headers: request.headers
+    });
+    
+    // Use the existing handler to process the request
+    return this.handleRequest(todayRequest);
   }
 }

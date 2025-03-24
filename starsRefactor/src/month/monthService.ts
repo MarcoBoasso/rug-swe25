@@ -3,16 +3,13 @@ import { Env } from "../types.js";
 import { MonthStorage } from "./monthStorage.js";
 import { DateUtils } from "../utils/dateUtils.js";
 
-// Modifichiamo l'interfaccia per riflettere la struttura reale dei dati
+// Interface for daily data returned by DayService
 interface DailyData {
-  date: string;
-  total_repositories: number;
-  timestamp: string;
-  [key: string]: string | number; // Per gli indici numerici come '9993', '9994', etc.
+  [repo: string]: number; // repository name -> count (inverted index)
 }
 
 interface MonthlyData {
-  [repo: string]: number; // repository name -> count
+  [repo: string]: number; // repository name -> total count
 }
 
 export class MonthService {
@@ -23,7 +20,6 @@ export class MonthService {
     this.storage = new MonthStorage(env);
     this.dateUtils = new DateUtils();
   }
-
 
   async getLastMonthData(): Promise<MonthlyData> {
     const currentDate = new Date();
@@ -51,19 +47,16 @@ export class MonthService {
           continue; // Skip to the next URL if there's an error
         }
         
-        const data = await response.json() as any;
+        // Parse the response data with the new format
+        const data = await response.json() as DailyData;
         
-        // Processiamo tutte le chiavi tranne 'date', 'total_repositories', e 'timestamp'
-        for (const [key, value] of Object.entries(data)) {
-          if (key !== 'date' && key !== 'total_repositories' && key !== 'timestamp') {
-            // Qui value è il nome del repository
-            if (typeof value === 'string') {
-              // Normalizza il nome del repository (converti in minuscolo)
-              const normalizedRepoName = value.toLowerCase();
-              // Incrementa il conteggio per questo repository
-              aggregatedData[normalizedRepoName] = (aggregatedData[normalizedRepoName] || 0) + 1;
-            }
-          }
+        // Process each repository and its score from the daily data
+        for (const [repo, score] of Object.entries(data)) {
+          // Ensure score is a number
+          const numericScore = typeof score === 'number' ? score : 0;
+          
+          // Add the score to the aggregate
+          aggregatedData[repo] = (aggregatedData[repo] || 0) + numericScore;
         }
       } catch (error) {
         console.error(`Error processing URL ${url}:`, error);

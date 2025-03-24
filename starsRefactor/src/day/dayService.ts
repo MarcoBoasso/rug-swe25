@@ -2,10 +2,7 @@ import { Env } from "../types.js";
 import { DayStorage } from "./dayStorage.js";
 
 interface DailyData {
-  date: string;
-  total_repositories: number;
-  timestamp: string;
-  [key: string]: string | number;
+  [key: string]: number;
 }
 
 export class DayService {
@@ -21,14 +18,7 @@ export class DayService {
     // Try to get cached data first
     const cachedData = await this.storage.getCachedData(cacheKey);
     if (cachedData) {
-      const limitedCachedData = this.applyLimit(cachedData, limit);
-      const dailyData: DailyData = {
-        date,
-        total_repositories: Object.keys(cachedData).length,
-        timestamp: new Date().toISOString(),
-        ...limitedCachedData,
-      };
-      return dailyData;
+      return this.formatResponse(cachedData, limit);
     }
 
     // Fetch new data from the improved API
@@ -37,14 +27,9 @@ export class DayService {
     // If the API returned no data or failed, return empty object
     if (!repoData || Object.keys(repoData).length === 0) {
       console.warn(`No data available for ${date}`);
-      const dailyData: DailyData = {
-        date,
-        total_repositories: 0,
-        timestamp: new Date().toISOString(),
-      };
       //cache data anyways
       await this.storage.cacheData(cacheKey, {});
-      return dailyData;
+      return {};
     }
 
     // Sort data by stars count (descending) if not already sorted
@@ -58,16 +43,8 @@ export class DayService {
     // Cache the results
     await this.storage.cacheData(cacheKey, final);
 
-    // Apply limit and construct result
-    const repoLimited = this.applyLimit(final, limit);
-    const result: DailyData = {
-      date,
-      total_repositories: Object.keys(final).length,
-      timestamp: new Date().toISOString(),
-      ...repoLimited,
-    };
-
-    return result;
+    // Format and return the result
+    return this.formatResponse(final, limit);
   }
 
   private async fetchAndAggregateData(
@@ -75,7 +52,7 @@ export class DayService {
   ): Promise<Record<string, string | number>> {
     try {
       // Use the new API that provides daily data directly
-      const url = `https://activity.forgithub.com/top10-starred-in-${date}.json`;
+      const url = `https://activity.forgithub.com/top100-starred-in-${date}.json`;
 
       console.log(`[info] Fetching data from: ${url}`);
 
@@ -106,13 +83,29 @@ export class DayService {
     }
   }
 
-  private applyLimit(
+  private formatResponse(
     data: Record<string, string | number>,
     limit?: number
-  ): Record<string, string | number> {
-    if (!limit || isNaN(limit)) {
-      return data;
-    }
-    return Object.fromEntries(Object.entries(data).slice(0, limit));
+  ): DailyData {
+    // Filter out non-repository entries (date, total_repositories, timestamp)
+    const repoEntries = Object.entries(data).filter(
+      ([key]) => !isNaN(Number(key))
+    );
+
+    // Apply limit if specified
+    const limitedEntries = limit ? repoEntries.slice(0, limit) : repoEntries;
+
+    // Transform the format: swap repo and number, and invert numbering
+    const totalRepos = limitedEntries.length;
+    const result: DailyData = {};
+
+    limitedEntries.forEach(([index, repoName], i) => {
+      if (typeof repoName === 'string') {
+        // Invert the numbering (if index 0, it gets the highest number)
+        result[repoName.toLowerCase()] = totalRepos - i;
+      }
+    });
+
+    return result;
   }
 }
