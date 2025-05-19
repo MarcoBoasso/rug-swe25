@@ -36,8 +36,8 @@ export const DEV_CONFIG = {
   // Cache TTL for repository analysis in seconds (24 hours)
   analysisCacheTTL: 86400,
   
-  // Cache TTL for popular repositories list in seconds (24 hours)
-  popularReposCacheTTL: 86400,
+  // Cache TTL for popular repositories list in seconds (10 days)
+  popularReposCacheTTL: 864000,
   
   // API refresh time (hour of day when the popular.forgithub.com API updates, in UTC)
   apiRefreshHour: 1,
