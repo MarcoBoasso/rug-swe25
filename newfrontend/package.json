@@ -1,0 +1,14 @@
+{
+  "name": "hot-for-github",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "publish": "wrangler publish",
+    "upload": "node upload-pages.js"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

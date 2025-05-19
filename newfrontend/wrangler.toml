@@ -1,0 +1,11 @@
+name = "hot-for-github"
+main = "src/index.js"
+compatibility_date = "2023-05-18"
+
+# KV namespace Definition
+kv_namespaces = [
+  { binding = "PAGES", id = "2b2cde8ad3374a99bc9146383b2a2537", preview_id = "bebb5af793084666bbf939459d4a01e8" }
+]
+
+# [site]
+# bucket = "./public"
