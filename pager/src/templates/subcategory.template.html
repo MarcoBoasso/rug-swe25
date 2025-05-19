@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{SUBCATEGORY_NAME}} - Hot ForGithub</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(90deg, #0F172A, #1E293B);
+        }
+        .repo-card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .repo-card-hover {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="gradient-bg text-gray-100 min-h-screen">
+    <header class="container mx-auto py-6 px-4">
+        <div class="flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
+                Hot ForGithub
+            </a>
+            <nav>
+                <a href="/" class="text-gray-300 hover:text-white">Home</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-10">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold mb-4 capitalize">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-{{CATEGORY_COLOR}}-400 to-{{CATEGORY_COLOR}}-600">
+                    {{SUBCATEGORY_NAME}}
+                </span>
+            </h1>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto">{{SUBCATEGORY_DESCRIPTION}}</p>
+            <div class="mt-4">
+                <span class="text-sm bg-{{CATEGORY_COLOR}}-500 bg-opacity-20 text-{{CATEGORY_COLOR}}-300 px-3 py-1 rounded-full">
+                    Part of {{CATEGORY_NAME}}
+                </span>
+            </div>
+        </div>
+        
+        <div class="bg-slate-800 rounded-xl p-8 shadow-lg mb-12">
+            <p class="text-center text-gray-300">
+                Soon you'll find interesting GitHub repositories for this category here!
+            </p>
+            <div class="mt-6 flex justify-center">
+                <div class="bg-slate-700 px-4 py-2 rounded-md inline-flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-gray-400 text-sm">Repositories are loaded from our API</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Repository cards will be loaded here via API -->
+        </div>
+    </main>
+
+    <footer class="container mx-auto px-4 py-8 border-t border-gray-800 mt-12">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <p class="text-gray-400">© 2025 Hot ForGithub</p>
+            </div>
+            <div class="flex space-x-6">
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">About</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">Documentation</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">GitHub</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
