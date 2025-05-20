@@ -3,17 +3,10 @@ main = "src/main/index.ts"
 compatibility_date = "2024-05-01"
 
 # Specify your Cloudflare Workers account ID
-account_id = "your-account-id"
+account_id = "e01e42acbbfc3fc1112f32d3411b50d6"
 
 # KV Namespace binding
 kv_namespaces = [
-  { binding = "REPO_CACHE", id = "your-kv-namespace-id" }
+  { binding = "REPO_CACHE", id = "d732572becc34e2da0de8c50d973f105" }
 ]
 
-# Secret environment variables
-[vars]
-# You can set non-secret variables here
-# Example: ENVIRONMENT = "production"
-
-# Secrets should be set using wrangler secret commands
-# $ wrangler secret put LLM_API_KEY
