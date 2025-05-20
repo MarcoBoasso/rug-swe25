@@ -17,32 +17,27 @@
           "description": "Server frameworks, APIs, and data processing services"
         },
         {
-          "name": "Full Stack",
-          "path": "fullstack",
+          "name": "Full-Stack",
+          "path": "full-stack",
           "description": "End-to-end solutions combining both frontend and backend technologies"
+        },
+        {
+          "name": "WebAssembly & Wasm",
+          "path": "webassembly-wasm",
+          "description": "Web-based compilation targets and runtime environments for high-performance applications"
         }
       ]
     },
     {
       "name": "Data Science",
-      "description": "Repositories for data analysis, machine learning, and visualization",
+      "description": "Repositories for data analysis, machine learning, and AI technologies",
       "icon": "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
       "color": "purple",
       "subcategories": [
         {
-          "name": "Machine Learning",
-          "path": "machine-learning",
-          "description": "ML frameworks, models, and algorithm implementations"
-        },
-        {
-          "name": "Data Visualization",
-          "path": "datavisua-lisation",
-          "description": "Tools and libraries for creating visual representations of data"
-        },
-        {
-          "name": "Data Engineering",
-          "path": "data-engineering",
-          "description": "Pipelines, ETL processes, and data processing infrastructure"
+          "name": "Data & AI",
+          "path": "data-ai",
+          "description": "Machine learning, analytics, data visualization, and artificial intelligence"
         }
       ]
     },
@@ -53,19 +48,19 @@
       "color": "green",
       "subcategories": [
         {
-          "name": "Infrastructure as Code",
-          "path": "code-infrastucture",
-          "description": "Tools for managing cloud resources and infrastructure through code"
+          "name": "DevOps & Automation",
+          "path": "devops-automation",
+          "description": "Tools for infrastructure management, CI/CD, and workflow automation"
         },
         {
-          "name": "CI/CD",
-          "path": "CI-CD",
-          "description": "Continuous integration and deployment pipelines and tools"
+          "name": "CLI & Tooling",
+          "path": "cli-tooling",
+          "description": "Command-line interfaces and developer productivity tools"
         },
         {
-          "name": "Monitoring",
-          "path": "monitoring",
-          "description": "Observability, logging, and performance tracking solutions"
+          "name": "Testing & QA",
+          "path": "testing-qa",
+          "description": "Frameworks and tools for testing, quality assurance, and validation"
         }
       ]
     },
@@ -76,19 +71,9 @@
       "color": "yellow",
       "subcategories": [
         {
-          "name": "Native Mobile",
+          "name": "Mobile",
           "path": "mobile",
-          "description": "Platform-specific applications for iOS and Android"
-        },
-        {
-          "name": "Cross-Platform",
-          "path": "cross-platform",
-          "description": "Frameworks and tools for building applications that run on multiple platforms"
-        },
-        {
-          "name": "Mobile Backends",
-          "path": "mobile-backends",
-          "description": "Backend services specifically designed for mobile applications"
+          "description": "Native and cross-platform mobile application development frameworks and tools"
         }
       ]
     },
@@ -99,19 +84,9 @@
       "color": "red",
       "subcategories": [
         {
-          "name": "Vulnerability Scanning",
-          "path": "pen-testing",
-          "description": "Tools for identifying security vulnerabilities in code and infrastructure"
-        },
-        {
-          "name": "Authentication",
-          "path": "authentication",
-          "description": "Identity and access management solutions"
-        },
-        {
-          "name": "Encryption",
-          "path": "encryption",
-          "description": "Libraries and tools for securing data through encryption"
+          "name": "Security",
+          "path": "security",
+          "description": "Tools for cybersecurity, vulnerability scanning, encryption, and authentication"
         }
       ]
     },
@@ -122,19 +97,9 @@
       "color": "indigo",
       "subcategories": [
         {
-          "name": "Game Engines",
-          "path": "game-engines",
-          "description": "Open-source game engines and rendering technologies"
-        },
-        {
-          "name": "Game Assets",
-          "path": "game-assests",
-          "description": "Tools for creating and managing game assets and resources"
-        },
-        {
-          "name": "Game AI",
-          "path": "game-AI",
-          "description": "Artificial intelligence frameworks for game development"
+          "name": "Game & Multimedia",
+          "path": "game-multimedia",
+          "description": "Game engines, audio/video processing, and interactive media technologies"
         }
       ]
     },
@@ -145,19 +110,9 @@
       "color": "pink",
       "subcategories": [
         {
-          "name": "Microcontrollers",
-          "path": "microcontrollers",
-          "description": "Tools and libraries for Arduino, ESP32, and other microcontroller platforms"
-        },
-        {
-          "name": "IoT Frameworks",
-          "path": "iot-frameworks",
-          "description": "Internet of Things protocols, platforms, and frameworks"
-        },
-        {
-          "name": "Real-time Systems",
-          "path": "rl-systems",
-          "description": "RTOS and tools for developing time-critical applications"
+          "name": "Embedded & IoT",
+          "path": "embedded-iot",
+          "description": "Tools and frameworks for embedded systems, Internet of Things, and hardware integration"
         }
       ]
     },
@@ -168,19 +123,9 @@
       "color": "amber",
       "subcategories": [
         {
-          "name": "Smart Contracts",
-          "path": "smart-contracts",
-          "description": "Tools for developing and testing blockchain smart contracts"
-        },
-        {
-          "name": "DeFi",
-          "path": "defi",
-          "description": "Decentralized finance protocols and applications"
-        },
-        {
-          "name": "Consensus Algorithms",
-          "path": "consensus-algorithms",
-          "description": "Implementations of blockchain consensus mechanisms"
+          "name": "Blockchain & Web3",
+          "path": "blockchain-web3",
+          "description": "Blockchain platforms, smart contracts, and decentralized applications"
         }
       ]
     },
@@ -191,19 +136,9 @@
       "color": "teal",
       "subcategories": [
         {
-          "name": "3D Frameworks",
-          "path": "3d-frameworks",
-          "description": "Libraries for 3D visualization and interaction"
-        },
-        {
-          "name": "Spatial Computing",
-          "path": "spatial-computing",
-          "description": "Tools for building spatially aware applications"
-        },
-        {
-          "name": "XR Interaction",
-          "path": "xr-interaction",
-          "description": "User interaction patterns and interfaces for AR/VR experiences"
+          "name": "AR/VR & Spatial",
+          "path": "ar-vr-spatial",
+          "description": "Tools and frameworks for augmented reality, virtual reality, and spatial computing"
         }
       ]
     }

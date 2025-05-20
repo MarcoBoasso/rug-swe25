@@ -1,6 +1,6 @@
 name = "hot-for-github"
 main = "src/index.js"
-compatibility_date = "2023-05-18"
+compatibility_date = "2025-01-01"
 
 # KV namespace Definition
 kv_namespaces = [

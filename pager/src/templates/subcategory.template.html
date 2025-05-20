@@ -16,6 +16,66 @@
         .repo-card-hover {
             transition: all 0.3s ease;
         }
+        .filter-btn.active {
+            position: relative;
+        }
+        .filter-btn.active:after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background-color: currentColor;
+            border-radius: 2px;
+        }
+        .language-filter {
+            max-height: 250px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .language-filter::-webkit-scrollbar {
+            width: 6px;
+        }
+        .language-filter::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        .language-filter::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        .tool-btn {
+            transition: all 0.2s ease;
+        }
+        .tool-btn:hover {
+            transform: translateY(-2px);
+        }
+        .tooltip {
+            position: relative;
+        }
+        .tooltip:before {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+        }
+        .tooltip:hover:before {
+            opacity: 1;
+            visibility: visible;
+        }
     </style>
 </head>
 <body class="gradient-bg text-gray-100 min-h-screen">
@@ -45,21 +105,88 @@
             </div>
         </div>
         
-        <div class="bg-slate-800 rounded-xl p-8 shadow-lg mb-12">
-            <p class="text-center text-gray-300">
-                Soon you'll find interesting GitHub repositories for this category here!
-            </p>
-            <div class="mt-6 flex justify-center">
-                <div class="bg-slate-700 px-4 py-2 rounded-md inline-flex items-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="text-gray-400 text-sm">Repositories are loaded from our API</span>
+        <!-- Filters -->
+        <div class="mb-8 bg-slate-800 rounded-xl p-6 shadow-lg">
+            <div class="flex flex-col md:flex-row md:items-center gap-6">
+                <!-- Sort filters -->
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="font-semibold text-gray-300">Sort by:</div>
+                    
+                    <div class="space-x-2">
+                        <button class="filter-btn active px-3 py-1 rounded-full bg-{{CATEGORY_COLOR}}-500 bg-opacity-20 text-{{CATEGORY_COLOR}}-300 text-sm hover:bg-opacity-30 transition-colors" data-filter="all">All</button>
+                        <button class="filter-btn px-3 py-1 rounded-full bg-slate-700 text-gray-300 text-sm hover:bg-slate-600 transition-colors" data-filter="stars">Most Stars</button>
+                        <button class="filter-btn px-3 py-1 rounded-full bg-slate-700 text-gray-300 text-sm hover:bg-slate-600 transition-colors" data-filter="recent">Recently Updated</button>
+                    </div>
+                </div>
+                
+                <!-- Language filter -->
+                <div class="flex flex-col md:ml-auto">
+                    <div class="font-semibold text-gray-300 mb-2">Filter by language:</div>
+                    <div class="relative">
+                        <select id="language-select" class="bg-slate-700 text-gray-300 w-full md:w-48 px-3 py-2 rounded-md appearance-none cursor-pointer">
+                            <option value="all">All Languages</option>
+                            <!-- Languages will be populated by JavaScript -->
+                        </select>
+                        <div class="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="repository-container" class="mb-12">
+            <div id="loading-state" class="bg-slate-800 rounded-xl p-8 shadow-lg mb-12">
+                <p class="text-center text-gray-300">
+                    Loading repositories...
+                </p>
+                <div class="mt-6 flex justify-center">
+                    <div class="bg-slate-700 px-4 py-2 rounded-md inline-flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        <span class="text-gray-400 text-sm">Fetching from API...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="error-state" class="bg-red-900 bg-opacity-20 rounded-xl p-8 shadow-lg mb-12 hidden">
+                <p class="text-center text-red-300">
+                    Failed to load repositories
+                </p>
+                <div class="mt-6 flex justify-center">
+                    <div class="bg-red-900 bg-opacity-30 px-4 py-2 rounded-md inline-flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span class="text-red-300 text-sm">Make sure the API is running at http://127.0.0.1:8787/</span>
+                    </div>
+                </div>
+                <div class="mt-4 flex justify-center">
+                    <button id="retry-button" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-colors">
+                        Retry
+                    </button>
+                </div>
+            </div>
+
+            <div id="empty-state" class="bg-slate-800 rounded-xl p-8 shadow-lg mb-12 hidden">
+                <p class="text-center text-gray-300">
+                    No repositories found for this category
+                </p>
+                <div class="mt-6 flex justify-center">
+                    <div class="bg-slate-700 px-4 py-2 rounded-md inline-flex items-center space-x-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="text-gray-400 text-sm">Check back later for updates</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div id="repositories-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Repository cards will be loaded here via API -->
         </div>
     </main>
@@ -77,5 +204,342 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Current category and subcategory information
+        const categoryInfo = {
+            category: '{{CATEGORY_NAME}}',
+            subcategory: '{{SUBCATEGORY_NAME}}',
+            color: '{{CATEGORY_COLOR}}'
+        };
+        
+        // API endpoint
+        const API_URL = 'https://popular-repos-analyzer.marcoboasso02.workers.dev?limit=500/';
+        
+        // Elements
+        const loadingState = document.getElementById('loading-state');
+        const errorState = document.getElementById('error-state');
+        const emptyState = document.getElementById('empty-state');
+        const repositoriesGrid = document.getElementById('repositories-grid');
+        const retryButton = document.getElementById('retry-button');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const languageSelect = document.getElementById('language-select');
+        
+        // Current repositories data
+        let allRepositories = [];
+        let currentFilter = 'all';
+        let currentLanguage = 'all';
+        
+        // Add event listener for retry button
+        retryButton.addEventListener('click', fetchRepositories);
+        
+        // Add event listeners for filter buttons
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Update active state
+                filterButtons.forEach(b => {
+                    b.classList.remove('active', `bg-${categoryInfo.color}-500`, 'bg-opacity-20', `text-${categoryInfo.color}-300`);
+                    b.classList.add('bg-slate-700', 'text-gray-300');
+                });
+                
+                e.target.classList.add('active', `bg-${categoryInfo.color}-500`, 'bg-opacity-20', `text-${categoryInfo.color}-300`);
+                e.target.classList.remove('bg-slate-700', 'text-gray-300');
+                
+                // Apply filter
+                currentFilter = e.target.getAttribute('data-filter');
+                applyFilters();
+            });
+        });
+        
+        // Add event listener for language select
+        languageSelect.addEventListener('change', (e) => {
+            currentLanguage = e.target.value;
+            applyFilters();
+        });
+        
+        // Fetch repositories when the page loads
+        document.addEventListener('DOMContentLoaded', fetchRepositories);
+        
+        // Function to fetch repositories from the API
+        function fetchRepositories() {
+            // Show loading state
+            loadingState.classList.remove('hidden');
+            errorState.classList.add('hidden');
+            emptyState.classList.add('hidden');
+            repositoriesGrid.innerHTML = '';
+            
+            fetch(API_URL)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Filter repositories by category
+                    allRepositories = filterRepositoriesByCategory(data.repositories);
+                    
+                    // Populate language filter
+                    populateLanguageFilter(allRepositories);
+                    
+                    // Hide loading state
+                    loadingState.classList.add('hidden');
+                    
+                    if (allRepositories.length === 0) {
+                        // Show empty state if no repositories match the category
+                        emptyState.classList.remove('hidden');
+                    } else {
+                        // Apply current filters and render
+                        applyFilters();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching repositories:', error);
+                    
+                    // Hide loading state and show error state
+                    loadingState.classList.add('hidden');
+                    errorState.classList.remove('hidden');
+                });
+        }
+        
+        // Function to populate the language filter dropdown
+        function populateLanguageFilter(repositories) {
+            // Extract unique languages
+            const languages = new Set();
+            repositories.forEach(repo => {
+                if (repo.language) {
+                    languages.add(repo.language);
+                }
+            });
+            
+            // Sort languages alphabetically
+            const sortedLanguages = Array.from(languages).sort();
+            
+            // Clear existing options except the first one
+            while (languageSelect.options.length > 1) {
+                languageSelect.remove(1);
+            }
+            
+            // Add language options
+            sortedLanguages.forEach(language => {
+                const option = document.createElement('option');
+                option.value = language;
+                option.textContent = language;
+                languageSelect.appendChild(option);
+            });
+        }
+        
+        // Function to apply the current filters
+        function applyFilters() {
+            // Clear the grid
+            repositoriesGrid.innerHTML = '';
+            
+            // Clone the repositories array to avoid modifying the original
+            let filteredRepos = [...allRepositories];
+            
+            // Apply language filter
+            if (currentLanguage !== 'all') {
+                filteredRepos = filteredRepos.filter(repo => repo.language === currentLanguage);
+            }
+            
+            // Apply sorting based on the current filter
+            if (currentFilter === 'stars') {
+                filteredRepos.sort((a, b) => b.stargazers_count - a.stargazers_count);
+            } else if (currentFilter === 'recent') {
+                filteredRepos.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+            }
+            
+            // Check if we have repositories after filtering
+            if (filteredRepos.length === 0) {
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                // Render the filtered repositories
+                renderRepositoryCards(filteredRepos);
+            }
+        }
+        
+        // Function to filter repositories by category
+        function filterRepositoriesByCategory(repositories) {
+            // Direct mapping of our subcategories to API categories
+            // Each subcategory maps to one or more API category names
+            const subcategoryMapping = {
+                // Web Development subcategories
+                'Frontend': ['Frontend'],
+                'Backend': ['Backend'],
+                'Full-Stack': ['Full-Stack'],
+                'WebAssembly & Wasm': ['WebAssembly & Wasm'],
+                
+                // Data Science subcategories
+                'Data & AI': ['Data & AI'],
+                
+                // DevOps subcategories
+                'DevOps & Automation': ['DevOps & Automation'],
+                'CLI & Tooling': ['CLI & Tooling'],
+                'Testing & QA': ['Testing & QA'],
+                
+                // Mobile Development subcategories
+                'Mobile': ['Mobile'],
+                
+                // Security subcategories
+                'Security': ['Security'],
+                
+                // Game Development subcategories
+                'Game & Multimedia': ['Game & Multimedia'],
+                
+                // Embedded Systems subcategories
+                'Embedded & IoT': ['Embedded & IoT'],
+                
+                // Blockchain subcategories
+                'Blockchain & Web3': ['Blockchain & Web3'],
+                
+                // AR/VR Development subcategories
+                'AR/VR & Spatial': ['AR/VR & Spatial']
+            };
+            
+            // Additional mapping from parent categories to API categories
+            // Used when a category page is viewed rather than a specific subcategory
+            const categoryMapping = {
+                'Web Development': ['Frontend', 'Backend', 'Full-Stack', 'WebAssembly & Wasm'],
+                'Data Science': ['Data & AI'],
+                'DevOps': ['DevOps & Automation', 'CLI & Tooling', 'Testing & QA'],
+                'Mobile Development': ['Mobile'],
+                'Security': ['Security'],
+                'Game Development': ['Game & Multimedia'],
+                'Embedded Systems': ['Embedded & IoT'],
+                'Blockchain': ['Blockchain & Web3'],
+                'AR/VR Development': ['AR/VR & Spatial']
+            };
+            
+            // Get the API categories that match our current subcategory
+            let targetCategories = subcategoryMapping[categoryInfo.subcategory] || [];
+            
+            // If no direct mapping exists, try the parent category
+            if (targetCategories.length === 0 && categoryMapping[categoryInfo.category]) {
+                targetCategories = categoryMapping[categoryInfo.category];
+            }
+            
+            // Filter repositories based on the target categories
+            return repositories.filter(repo => {
+                return targetCategories.includes(repo.category);
+            });
+        }
+        
+        // Function to render repository cards
+        function renderRepositoryCards(repositories) {
+            repositories.forEach(repo => {
+                // Create a repository card
+                const card = document.createElement('div');
+                card.className = 'bg-slate-800 rounded-lg p-6 shadow-lg repo-card-hover mb-6';
+                
+                // Format the date
+                const createdDate = new Date(repo.created_at);
+                const formattedDate = createdDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                
+                // Create the card HTML
+                card.innerHTML = `
+                    <div class="flex items-center mb-4">
+                        <img src="${repo.owner.avatar_url}" alt="${repo.owner.login}" class="w-10 h-10 rounded-full mr-3">
+                        <div>
+                            <h3 class="font-bold text-lg">
+                                <a href="https://github.com/${repo.full_name}" target="_blank" class="hover:text-${categoryInfo.color}-400 transition-colors">
+                                    ${repo.name}
+                                </a>
+                            </h3>
+                            <p class="text-sm text-gray-400">${repo.owner.login} ${repo.owner.type === 'Organization' ? '(Org)' : ''}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between mb-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-300 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/>
+                                </svg>
+                                <span>${formatNumber(repo.stargazers_count)}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                </svg>
+                                <span>${formatNumber(repo.forks_count)}</span>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2 py-1 bg-${categoryInfo.color}-500 bg-opacity-20 text-${categoryInfo.color}-300 rounded-full">
+                            ${repo.language || 'N/A'}
+                        </span>
+                    </div>
+                    
+                    <div class="mb-4 flex justify-between text-xs text-gray-400">
+                        <span>Created: ${formattedDate}</span>
+                        ${repo.license ? `<span>License: ${repo.license.name}</span>` : ''}
+                    </div>
+                    
+                    <!-- Summary displayed in full (not truncated) -->
+                    ${repo.summary ? `
+                    <div class="mt-4 pt-4 border-t border-gray-700">
+                        <p class="text-sm text-gray-300">${repo.summary}</p>
+                    </div>` : ''}
+                    
+                    ${repo.topics && repo.topics.length > 0 ? `
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        ${repo.topics.slice(0, 5).map(topic => 
+                            `<span class="text-xs px-2 py-1 bg-${categoryInfo.color}-900 bg-opacity-30 text-${categoryInfo.color}-300 rounded-full">${topic}</span>`
+                        ).join('')}
+                        ${repo.topics.length > 5 ? `<span class="text-xs px-2 py-1 bg-gray-700 bg-opacity-30 text-gray-400 rounded-full">+${repo.topics.length - 5} more</span>` : ''}
+                    </div>` : ''}
+                    
+                    <!-- Tools section -->
+                    <div class="mt-5 pt-4 border-t border-gray-700">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-500">Tools:</span>
+                            <div class="flex space-x-3">
+                                <a href="https://gitdiagram.com/${repo.owner.login}/${repo.name}" target="_blank" class="tool-btn tooltip" data-tooltip="View repository diagram">
+                                    <div class="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-900 bg-opacity-30 text-indigo-300 hover:bg-opacity-50 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3m0 0l3 3m-3-3v12m6-2v2a2 2 0 01-2 2H7a2 2 0 01-2-2v-2m2-4h.01M17 16h.01" />
+                                        </svg>
+                                    </div>
+                                </a>
+                                <a href="https://uithub.com/${repo.owner.login}/${repo.name}" target="_blank" class="tool-btn tooltip" data-tooltip="Get code for LLM prompt">
+                                    <div class="w-8 h-8 flex items-center justify-center rounded-full bg-green-900 bg-opacity-30 text-green-300 hover:bg-opacity-50 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                        </svg>
+                                    </div>
+                                </a>
+                                <a href="https://forgithub.com/${repo.owner.login}/${repo.name}" target="_blank" class="tool-btn tooltip" data-tooltip="Repository tools">
+                                    <div class="w-8 h-8 flex items-center justify-center rounded-full bg-${categoryInfo.color}-900 bg-opacity-30 text-${categoryInfo.color}-300 hover:bg-opacity-50 transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add the card to the grid
+                repositoriesGrid.appendChild(card);
+            });
+        }
+        
+        // Helper function to format numbers (e.g., 1.2k instead of 1200)
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            }
+            if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'k';
+            }
+            return num;
+        }
+    </script>
 </body>
 </html>
