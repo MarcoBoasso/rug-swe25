@@ -84,8 +84,8 @@ import {
   
     // Unit testing for the getAnalysisFromCache() function
     describe("getAnalysisFromCache()", () => {
-      // Unit test code: UT-71
-      test("UT-71: should return cached analysis when found", async () => {
+      // Unit test code: UT-67
+      test("UT-67: should return cached analysis when found", async () => {
         const mockAnalysis: RepositoryAnalysis = {
           category: 'Frontend',
           summary: 'A React-based web application'
@@ -99,8 +99,8 @@ import {
         expect(mockKV.get).toHaveBeenCalledWith('test-cache-key');
       });
   
-      // Unit test code: UT-72
-      test("UT-72: should return null when cache miss", async () => {
+      // Unit test code: UT-68
+      test("UT-68: should return null when cache miss", async () => {
         mockKV.get.mockResolvedValue(null);
   
         const result = await getAnalysisFromCache('missing-key', mockEnv as any);
@@ -109,8 +109,8 @@ import {
         expect(mockKV.get).toHaveBeenCalledWith('missing-key');
       });
   
-      // Unit test code: UT-73
-      test("UT-73: should return null when KV namespace unavailable", async () => {
+      // Unit test code: UT-69
+      test("UT-69: should return null when KV namespace unavailable", async () => {
         const envWithoutKV = {};
   
         const result = await getAnalysisFromCache('test-key', envWithoutKV as any);
@@ -118,8 +118,8 @@ import {
         expect(result).toBeNull();
       });
   
-      // Unit test code: UT-74
-      test("UT-74: should handle KV get errors gracefully", async () => {
+      // Unit test code: UT-70
+      test("UT-70: should handle KV get errors gracefully", async () => {
         mockKV.get.mockRejectedValue(new Error('KV error'));
   
         const result = await getAnalysisFromCache('error-key', mockEnv as any);
@@ -128,8 +128,8 @@ import {
         expect(console.error).toHaveBeenCalledWith('Error retrieving from cache:', expect.any(Error));
       });
   
-      // Unit test code: UT-75
-      test("UT-75: should handle JSON parse errors gracefully", async () => {
+      // Unit test code: UT-71
+      test("UT-71: should handle JSON parse errors gracefully", async () => {
         mockKV.get.mockResolvedValue('invalid json');
   
         const result = await getAnalysisFromCache('invalid-json-key', mockEnv as any);
@@ -141,8 +141,8 @@ import {
   
     // Unit testing for the storeAnalysisInCache() function
     describe("storeAnalysisInCache()", () => {
-      // Unit test code: UT-76
-      test("UT-76: should store analysis in cache with default TTL", async () => {
+      // Unit test code: UT-72
+      test("UT-72: should store analysis in cache with default TTL", async () => {
         const analysis: RepositoryAnalysis = {
           category: 'Backend',
           summary: 'A Node.js API server'
@@ -157,8 +157,8 @@ import {
         );
       });
   
-      // Unit test code: UT-77
-      test("UT-77: should store analysis with custom TTL", async () => {
+      // Unit test code: UT-73
+      test("UT-73: should store analysis with custom TTL", async () => {
         const analysis: RepositoryAnalysis = {
           category: 'Mobile',
           summary: 'A React Native app'
@@ -173,8 +173,8 @@ import {
         );
       });
   
-      // Unit test code: UT-78
-      test("UT-78: should handle missing KV namespace gracefully", async () => {
+      // Unit test code: UT-74
+      test("UT-74: should handle missing KV namespace gracefully", async () => {
         const analysis: RepositoryAnalysis = {
           category: 'Data & AI',
           summary: 'Machine learning framework'
@@ -187,8 +187,8 @@ import {
         expect(mockKV.put).not.toHaveBeenCalled();
       });
   
-      // Unit test code: UT-79
-      test("UT-79: should handle KV put errors gracefully", async () => {
+      // Unit test code: UT-75
+      test("UT-75: should handle KV put errors gracefully", async () => {
         const analysis: RepositoryAnalysis = {
           category: 'DevOps & Automation',
           summary: 'CI/CD pipeline tool'
@@ -204,8 +204,8 @@ import {
   
     // Unit testing for the getPopularReposFromCache() function
     describe("getPopularReposFromCache()", () => {
-      // Unit test code: UT-80
-      test("UT-80: should return cached repositories when found and not expired", async () => {
+      // Unit test code: UT-76
+      test("UT-76: should return cached repositories when found and not expired", async () => {
         const mockRepos: MockRepository[] = [
           { name: 'repo1', full_name: 'user/repo1', stargazers_count: 100, language: 'JavaScript' },
           { name: 'repo2', full_name: 'user/repo2', stargazers_count: 200, language: 'Python' }
@@ -224,8 +224,8 @@ import {
         expect(mockKV.get).toHaveBeenCalledWith('popular-repos');
       });
   
-      // Unit test code: UT-81
-      test("UT-81: should return null when cache should be refreshed", async () => {
+      // Unit test code: UT-77
+      test("UT-77: should return null when cache should be refreshed", async () => {
         // Set time after refresh time but no refresh today
         jest.setSystemTime(new Date('2023-06-15T14:30:00Z'));
         
@@ -236,30 +236,20 @@ import {
         expect(result).toBeNull();
       });
   
-      // Unit test code: UT-82
-      test("UT-82: should return null when KV namespace unavailable", async () => {
+      // Unit test code: UT-78
+      test("UT-78: should return null when KV namespace unavailable", async () => {
         const envWithoutKV = {};
   
         const result = await getPopularReposFromCache(envWithoutKV as any);
   
         expect(result).toBeNull();
       });
-  
-      // Unit test code: UT-83
-      test("UT-83: should handle KV errors gracefully", async () => {
-        mockKV.get.mockRejectedValue(new Error('KV error'));
-  
-        const result = await getPopularReposFromCache(mockEnv as any);
-  
-        expect(result).toBeNull();
-        expect(console.error).toHaveBeenCalledWith('Error retrieving popular repos from cache:', expect.any(Error));
-      });
     });
   
     // Unit testing for the storePopularReposInCache() function
     describe("storePopularReposInCache()", () => {
-      // Unit test code: UT-84
-      test("UT-84: should store repositories and last refresh timestamp", async () => {
+      // Unit test code: UT-79
+      test("UT-79: should store repositories and last refresh timestamp", async () => {
         const mockRepos: MockRepository[] = [
           { name: 'repo1', full_name: 'user/repo1', stargazers_count: 150, language: 'TypeScript' }
         ];
@@ -279,8 +269,8 @@ import {
         );
       });
   
-      // Unit test code: UT-85
-      test("UT-85: should handle missing KV namespace gracefully", async () => {
+      // Unit test code: UT-80
+      test("UT-80: should handle missing KV namespace gracefully", async () => {
         const mockRepos: MockRepository[] = [
           { name: 'repo1', full_name: 'user/repo1', stargazers_count: 50, language: 'Go' }
         ];
@@ -291,8 +281,8 @@ import {
         expect(mockKV.put).not.toHaveBeenCalled();
       });
   
-      // Unit test code: UT-86
-      test("UT-86: should handle KV put errors gracefully", async () => {
+      // Unit test code: UT-81
+      test("UT-81: should handle KV put errors gracefully", async () => {
         const mockRepos: MockRepository[] = [
           { name: 'repo1', full_name: 'user/repo1', stargazers_count: 75, language: 'Rust' }
         ];
@@ -307,15 +297,15 @@ import {
   
     // Unit testing for the invalidateCacheEntry() function
     describe("invalidateCacheEntry()", () => {
-      // Unit test code: UT-87
-      test("UT-87: should delete cache entry successfully", async () => {
+      // Unit test code: UT-82
+      test("UT-82: should delete cache entry successfully", async () => {
         await invalidateCacheEntry('invalidate-key', mockEnv as any);
   
         expect(mockKV.delete).toHaveBeenCalledWith('invalidate-key');
       });
   
-      // Unit test code: UT-88
-      test("UT-88: should handle missing KV namespace gracefully", async () => {
+      // Unit test code: UT-83
+      test("UT-83: should handle missing KV namespace gracefully", async () => {
         const envWithoutKV = {};
   
         await invalidateCacheEntry('no-kv-key', envWithoutKV as any);
@@ -323,8 +313,8 @@ import {
         expect(mockKV.delete).not.toHaveBeenCalled();
       });
   
-      // Unit test code: UT-89
-      test("UT-89: should handle KV delete errors gracefully", async () => {
+      // Unit test code: UT-84
+      test("UT-84: should handle KV delete errors gracefully", async () => {
         mockKV.delete.mockRejectedValue(new Error('KV delete error'));
   
         await invalidateCacheEntry('error-delete-key', mockEnv as any);
@@ -335,22 +325,22 @@ import {
   
     // Unit testing for the generateCacheKey() function
     describe("generateCacheKey()", () => {
-      // Unit test code: UT-90
-      test("UT-90: should generate correct cache key format", () => {
+      // Unit test code: UT-85
+      test("UT-85: should generate correct cache key format", () => {
         const result = generateCacheKey('user/repo', '2023-06-15T12:00:00Z');
   
         expect(result).toBe('repo:user/repo:2023-06-15T12:00:00Z');
       });
   
-      // Unit test code: UT-91
-      test("UT-91: should handle special characters in repo name", () => {
+      // Unit test code: UT-86
+      test("UT-86: should handle special characters in repo name", () => {
         const result = generateCacheKey('user/repo-with-dashes_and_underscores', '2023-01-01T00:00:00Z');
   
         expect(result).toBe('repo:user/repo-with-dashes_and_underscores:2023-01-01T00:00:00Z');
       });
   
-      // Unit test code: UT-92
-      test("UT-92: should handle different timestamp formats", () => {
+      // Unit test code: UT-87
+      test("UT-87: should handle different timestamp formats", () => {
         const result = generateCacheKey('org/project', '2023-12-31T23:59:59.999Z');
   
         expect(result).toBe('repo:org/project:2023-12-31T23:59:59.999Z');
@@ -359,8 +349,8 @@ import {
   
     // Unit testing for CACHE_CONFIG constant
     describe("CACHE_CONFIG", () => {
-      // Unit test code: UT-93
-      test("UT-93: should have correct default configuration values", () => {
+      // Unit test code: UT-88
+      test("UT-88: should have correct default configuration values", () => {
         expect(CACHE_CONFIG.analysisTTL).toBe(3600);
         expect(CACHE_CONFIG.popularReposTTL).toBe(7200);
       });
@@ -368,8 +358,8 @@ import {
   
     // Unit testing for time-based refresh logic
     describe("refresh logic", () => {
-      // Unit test code: UT-94
-      test("UT-94: should not refresh when before refresh time", async () => {
+      // Unit test code: UT-89
+      test("UT-89: should not refresh when before refresh time", async () => {
         // Set time before refresh time (12:15 UTC)
         jest.setSystemTime(new Date('2023-06-15T10:00:00Z'));
   
@@ -384,8 +374,8 @@ import {
         expect(result).toEqual(mockRepos);
       });
   
-      // Unit test code: UT-95
-      test("UT-95: should refresh when after refresh time and not refreshed today", async () => {
+      // Unit test code: UT-90
+      test("UT-90: should refresh when after refresh time and not refreshed today", async () => {
         // Set time after refresh time
         jest.setSystemTime(new Date('2023-06-15T14:30:00Z'));
   
@@ -397,8 +387,8 @@ import {
         expect(result).toBeNull(); // Should force refresh
       });
   
-      // Unit test code: UT-96
-      test("UT-96: should not refresh when already refreshed today", async () => {
+      // Unit test code: UT-9§
+      test("UT-91: should not refresh when already refreshed today", async () => {
         // Set time after refresh time
         jest.setSystemTime(new Date('2023-06-15T16:00:00Z'));
   

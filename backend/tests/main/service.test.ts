@@ -87,8 +87,8 @@ describe("service", () => {
 
   // Unit testing for the fetchPopularRepositories() function
   describe("fetchPopularRepositories()", () => {
-    // Unit test code: UT-15
-    test("UT-15: should return repositories from cache when available", async () => {
+    // Unit test code: UT-13
+    test("UT-13: should return repositories from cache when available", async () => {
       const mockCachedRepos: MockRepository[] = [
         { 
           id: 1, 
@@ -119,8 +119,8 @@ describe("service", () => {
       expect(mockFetch).not.toHaveBeenCalled();
     });
 
-    // Unit test code: UT-16
-    test("UT-16: should fetch from API when cache is empty and store in cache", async () => {
+    // Unit test code: UT-14
+    test("UT-14: should fetch from API when cache is empty and store in cache", async () => {
       const mockApiRepos: MockRepository[] = [
         { 
           id: 1, 
@@ -153,8 +153,8 @@ describe("service", () => {
       expect(mockStorePopularReposInCache).toHaveBeenCalledWith(mockApiRepos, mockEnv);
     });
 
-    // Unit test code: UT-17
-    test("UT-17: should throw error when API request fails", async () => {
+    // Unit test code: UT-15
+    test("UT-15: should throw error when API request fails", async () => {
       mockGetPopularReposFromCache.mockResolvedValue(null);
       mockFetch.mockResolvedValue({
         ok: false,
@@ -171,8 +171,8 @@ describe("service", () => {
       expect(mockStorePopularReposInCache).not.toHaveBeenCalled();
     });
 
-    // Unit test code: UT-18
-    test("UT-18: should throw error when fetch throws an exception", async () => {
+    // Unit test code: UT-16
+    test("UT-16: should throw error when fetch throws an exception", async () => {
       const errorMessage = 'Network error';
       mockGetPopularReposFromCache.mockResolvedValue(null);
       mockFetch.mockRejectedValue(new Error(errorMessage));
@@ -186,8 +186,8 @@ describe("service", () => {
       expect(mockStorePopularReposInCache).not.toHaveBeenCalled();
     });
 
-    // Unit test code: UT-19
-    test("UT-19: should handle unknown error types gracefully", async () => {
+    // Unit test code: UT-17
+    test("UT-17: should handle unknown error types gracefully", async () => {
       mockGetPopularReposFromCache.mockResolvedValue(null);
       mockFetch.mockRejectedValue('Unknown string error');
 
@@ -196,8 +196,8 @@ describe("service", () => {
       );
     });
 
-    // Unit test code: UT-20
-    test("UT-20: should handle cache error and fallback to API", async () => {
+    // Unit test code: UT-18
+    test("UT-18: should handle cache error and fallback to API", async () => {
       const mockApiRepos: MockRepository[] = [
         { 
           id: 1, 
@@ -238,8 +238,8 @@ describe("service", () => {
       }
     ];
 
-    // Unit test code: UT-21
-    test("UT-21: should throw error when LLM API key is missing", async () => {
+    // Unit test code: UT-19
+    test("UT-19: should throw error when LLM API key is missing", async () => {
       const envWithoutKey: Env = {
         REPO_CACHE: mockEnv.REPO_CACHE
       };
@@ -248,8 +248,8 @@ describe("service", () => {
         .rejects.toThrow('LLM API key is required for repository analysis');
     });
 
-    // Unit test code: UT-22
-    test("UT-22: should return enhanced repositories with cached analysis", async () => {
+    // Unit test code: UT-20
+    test("UT-20: should return enhanced repositories with cached analysis", async () => {
       const mockAnalysis: RepositoryAnalysis = {
         category: 'Web Framework',
         summary: 'A modern web framework for building scalable applications'
@@ -271,8 +271,8 @@ describe("service", () => {
       expect(mockGenerateRepositoryAnalysis).not.toHaveBeenCalled();
     });
 
-    // Unit test code: UT-23
-    test("UT-23: should generate new analysis when not in cache", async () => {
+    // Unit test code: UT-21
+    test("UT-21: should generate new analysis when not in cache", async () => {
       const mockAnalysis: RepositoryAnalysis = {
         category: 'Machine Learning',
         summary: 'A comprehensive machine learning library with advanced features'
@@ -298,8 +298,8 @@ describe("service", () => {
       );
     });
 
-    // Unit test code: UT-24
-    test("UT-24: should provide fallback analysis on error", async () => {
+    // Unit test code: UT-22
+    test("UT-22: should provide fallback analysis on error", async () => {
       mockGetAnalysisFromCache.mockResolvedValue(null);
       mockGenerateRepositoryAnalysis.mockRejectedValue(new Error('LLM API error'));
 
@@ -316,8 +316,8 @@ describe("service", () => {
       );
     });
 
-    // Unit test code: UT-25
-    test("UT-25: should process multiple repositories in parallel", async () => {
+    // Unit test code: UT-23
+    test("UT-23: should process multiple repositories in parallel", async () => {
       const multipleRepos: MockRepository[] = [
         { 
           id: 1, 
@@ -361,8 +361,8 @@ describe("service", () => {
       expect(mockGetAnalysisFromCache).toHaveBeenCalledTimes(2);
     });
 
-    // Unit test code: UT-26
-    test("UT-26: should handle mixed cache hits and misses", async () => {
+    // Unit test code: UT-24
+    test("UT-24: should handle mixed cache hits and misses", async () => {
       const multipleRepos: MockRepository[] = [
         { 
           id: 1, 
@@ -412,8 +412,8 @@ describe("service", () => {
 
   // Unit testing for the formatRepositoryForLLM() function
   describe("formatRepositoryForLLM()", () => {
-    // Unit test code: UT-27
-    test("UT-27: should format repository with all fields present", () => {
+    // Unit test code: UT-25
+    test("UT-25: should format repository with all fields present", () => {
       const mockRepo: MockRepository = {
         id: 1,
         name: 'test-repo',
@@ -439,8 +439,8 @@ describe("service", () => {
       expect(result).toContain('src/');
     });
 
-    // Unit test code: UT-28
-    test("UT-28: should handle missing optional fields gracefully", () => {
+    // Unit test code: UT-26
+    test("UT-26: should handle missing optional fields gracefully", () => {
       const mockRepo: MockRepository = {
         id: 2,
         name: 'minimal-repo',
@@ -459,8 +459,8 @@ describe("service", () => {
       expect(result).toContain('File Tree Structure:\nNo file tree available');
     });
 
-    // Unit test code: UT-29
-    test("UT-29: should handle empty string values properly", () => {
+    // Unit test code: UT-27
+    test("UT-27: should handle empty string values properly", () => {
       const mockRepo: MockRepository = {
         id: 3,
         name: 'empty-fields-repo',
@@ -481,8 +481,8 @@ describe("service", () => {
       expect(result).toContain('File Tree Structure:\nNo file tree available');
     });
 
-    // Unit test code: UT-30
-    test("UT-30: should format repository with partial information", () => {
+    // Unit test code: UT-28
+    test("UT-28: should format repository with partial information", () => {
       const mockRepo: MockRepository = {
         id: 4,
         name: 'partial-repo',
@@ -505,8 +505,8 @@ describe("service", () => {
       expect(result).toContain('File Tree Structure:\nNo file tree available');
     });
 
-    // Unit test code: UT-31
-    test("UT-31: should maintain consistent formatting structure", () => {
+    // Unit test code: UT-29
+    test("UT-29: should maintain consistent formatting structure", () => {
       const mockRepo: MockRepository = {
         id: 5,
         name: 'structure-test',

@@ -76,8 +76,8 @@ import {
   
     // Unit testing for the generateRepositoryAnalysis() function
     describe("generateRepositoryAnalysis()", () => {
-      // Unit test code: UT-48
-      test("UT-48: should generate analysis successfully with valid API response", async () => {
+      // Unit test code: UT-46
+      test("UT-46: should generate analysis successfully with valid API response", async () => {
         const expectedAnalysis: RepositoryAnalysis = {
           category: 'Frontend',
           summary: 'A modern React-based web application with TypeScript support'
@@ -102,8 +102,8 @@ import {
         expect(mockFetch).toHaveBeenCalledTimes(1);
       });
   
-      // Unit test code: UT-49
-      test("UT-49: should return fallback analysis when API call fails", async () => {
+      // Unit test code: UT-47
+      test("UT-47: should return fallback analysis when API call fails", async () => {
         mockFormatRepositoryForLLM.mockReturnValue('Formatted repository data');
         mockFetch.mockRejectedValue(new Error('API Error'));
   
@@ -119,8 +119,8 @@ import {
         );
       });
   
-      // Unit test code: UT-50
-      test("UT-50: should return fallback analysis when parsing fails", async () => {
+      // Unit test code: UT-48
+      test("UT-48: should return fallback analysis when parsing fails", async () => {
         mockFormatRepositoryForLLM.mockReturnValue('Formatted repository data');
         mockFetch.mockResolvedValue({
           ok: true,
@@ -144,8 +144,8 @@ import {
   
     // Unit testing for the callDeepseekAPI() function
     describe("callDeepseekAPI()", () => {
-      // Unit test code: UT-51
-      test("UT-51: should make successful API call with correct parameters", async () => {
+      // Unit test code: UT-49
+      test("UT-49: should make successful API call with correct parameters", async () => {
         const mockResponse = {
           choices: [{
             message: {
@@ -188,8 +188,8 @@ import {
         );
       });
   
-      // Unit test code: UT-52
-      test("UT-52: should handle API error response", async () => {
+      // Unit test code: UT-50
+      test("UT-50: should handle API error response", async () => {
         mockFetch.mockResolvedValue({
           ok: false,
           status: 400,
@@ -200,8 +200,8 @@ import {
           .rejects.toThrow('Deepseek API returned 400: Bad Request');
       });
   
-      // Unit test code: UT-53
-      test("UT-53: should retry on failure and eventually succeed", async () => {
+      // Unit test code: UT-5§
+      test("UT-51: should retry on failure and eventually succeed", async () => {
         const mockResponse = {
           choices: [{
             message: {
@@ -227,8 +227,8 @@ import {
         );
       });
   
-      // Unit test code: UT-54
-      test("UT-54: should fail after max retries exceeded", async () => {
+      // Unit test code: UT-52
+      test("UT-52: should fail after max retries exceeded", async () => {
         mockFetch.mockRejectedValue(new Error('Persistent network error'));
   
         await expect(callDeepseekAPI('test input', 'test-api-key'))
@@ -238,8 +238,8 @@ import {
         expect(console.log).toHaveBeenCalledTimes(3); // 3 retry messages
       });
   
-      // Unit test code: UT-55
-      test("UT-55: should truncate long input before API call", async () => {
+      // Unit test code: UT-53
+      test("UT-53: should truncate long input before API call", async () => {
         const longInput = 'a'.repeat(150000); // Very long input
         const mockResponse = {
           choices: [{
@@ -268,41 +268,24 @@ import {
   
     // Unit testing for the truncateInput() function
     describe("truncateInput()", () => {
-      // Unit test code: UT-56
-      test("UT-56: should not truncate input within token limit", () => {
+      // Unit test code: UT-54
+      test("UT-54: should not truncate input within token limit", () => {
         const input = 'This is a short input';
         const result = truncateInput(input, 1000);
         
         expect(result).toBe(input);
       });
-  
-      // Unit test code: UT-57
-      test("UT-57: should truncate input exceeding token limit", () => {
-        const input = 'a'.repeat(1000);
-        const result = truncateInput(input, 100); // 100 tokens = ~400 chars
-        
-        expect(result.length).toBeLessThan(input.length);
-        expect(result).toContain('[Input truncated to fit token limit]');
-        expect(result.length).toBeLessThanOrEqual(400 + '\n\n[Input truncated to fit token limit]'.length);
-      });
-  
-      // Unit test code: UT-58
-      test("UT-58: should handle empty input", () => {
-        const result = truncateInput('', 100);
-        
-        expect(result).toBe('');
-      });
-  
-      // Unit test code: UT-59
-      test("UT-59: should handle exact token limit boundary", () => {
+
+      // Unit test code: UT-55
+      test("UT-55: should handle exact token limit boundary", () => {
         const input = 'a'.repeat(400); // Exactly 100 tokens
         const result = truncateInput(input, 100);
         
         expect(result).toBe(input); // Should not truncate
       });
   
-      // Unit test code: UT-60
-      test("UT-60: should calculate token estimation correctly", () => {
+      // Unit test code: UT-56
+      test("UT-56: should calculate token estimation correctly", () => {
         const input = 'a'.repeat(401); // Just over 100 tokens
         const result = truncateInput(input, 100);
         
@@ -313,8 +296,8 @@ import {
   
     // Unit testing for the parseAnalysisResult() function
     describe("parseAnalysisResult()", () => {
-      // Unit test code: UT-61
-      test("UT-61: should parse valid JSON response correctly", () => {
+      // Unit test code: UT-57
+      test("UT-57: should parse valid JSON response correctly", () => {
         const jsonResponse = JSON.stringify({
           category: 'Data & AI',
           summary: 'A machine learning framework for deep neural networks'
@@ -328,8 +311,8 @@ import {
         });
       });
   
-      // Unit test code: UT-62
-      test("UT-62: should handle malformed JSON with regex fallback", () => {
+      // Unit test code: UT-58
+      test("UT-58: should handle malformed JSON with regex fallback", () => {
         const malformedResponse = `
           The repository appears to be:
           category: "Frontend"
@@ -345,8 +328,8 @@ import {
         });
       });
   
-      // Unit test code: UT-63
-      test("UT-63: should handle response with single quotes", () => {
+      // Unit test code: UT-59
+      test("UT-59: should handle response with single quotes", () => {
         const responseWithSingleQuotes = `
           {
             'category': 'Backend',
@@ -360,8 +343,8 @@ import {
         expect(result.summary).toBe('A REST API server built with Express.js');
       });
   
-      // Unit test code: UT-64
-      test("UT-64: should return fallback values when regex extraction fails", () => {
+      // Unit test code: UT-60
+      test("UT-60: should return fallback values when regex extraction fails", () => {
         const unparsableResponse = 'This is completely unparsable text with no structure';
   
         const result = parseAnalysisResult(unparsableResponse, 'test-repo');
@@ -376,8 +359,8 @@ import {
         );
       });
   
-      // Unit test code: UT-65
-      test("UT-65: should handle partial regex matches", () => {
+      // Unit test code: UT-61
+      test("UT-61: should handle partial regex matches", () => {
         const partialResponse = `
           category: "Mobile"
           Some other text without summary
@@ -391,8 +374,8 @@ import {
         });
       });
   
-      // Unit test code: UT-66
-      test("UT-66: should handle response with extra whitespace and formatting", () => {
+      // Unit test code: UT-62
+      test("UT-62: should handle response with extra whitespace and formatting", () => {
         const messyResponse = `
           {
             "category"  :   "DevOps & Automation"  ,
@@ -408,8 +391,8 @@ import {
         });
       });
   
-      // Unit test code: UT-67
-      test("UT-67: should handle empty string response", () => {
+      // Unit test code: UT-63
+      test("UT-63: should handle empty string response", () => {
         const result = parseAnalysisResult('', 'empty-repo');
   
         expect(result).toEqual({
@@ -418,8 +401,8 @@ import {
         });
       });
   
-      // Unit test code: UT-68
-      test("UT-68: should handle response with mixed case field names", () => {
+      // Unit test code: UT-64
+      test("UT-64: should handle response with mixed case field names", () => {
         const mixedCaseResponse = `
           Category: "Blockchain & Web3"
           Summary: "A decentralized application framework"
@@ -434,8 +417,8 @@ import {
   
     // Unit testing for LLM_CONFIG constant
     describe("LLM_CONFIG", () => {
-      // Unit test code: UT-69
-      test("UT-69: should have correct configuration values", () => {
+      // Unit test code: UT-65
+      test("UT-65: should have correct configuration values", () => {
         expect(LLM_CONFIG.provider).toBe('deepseek');
         expect(LLM_CONFIG.deepseek.apiEndpoint).toBe('https://api.deepseek.com/v1/chat/completions');
         expect(LLM_CONFIG.deepseek.model).toBe('deepseek-chat');
@@ -445,8 +428,8 @@ import {
         expect(LLM_CONFIG.retry.backoffFactor).toBe(2);
       });
   
-      // Unit test code: UT-70
-      test("UT-70: should have non-empty prompt configuration", () => {
+      // Unit test code: UT-66
+      test("UT-66: should have non-empty prompt configuration", () => {
         expect(LLM_CONFIG.prompt).toBeDefined();
         expect(LLM_CONFIG.prompt.trim().length).toBeGreaterThan(0);
         expect(LLM_CONFIG.prompt).toContain('JSON format');

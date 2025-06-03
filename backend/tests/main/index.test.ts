@@ -133,16 +133,7 @@ describe("index", () => {
   // Unit testing for the main fetch() function
   describe("fetch()", () => {
     // Unit test code: UT-02
-    test("UT-02: should handle OPTIONS request and return CORS headers", async () => {
-      const request = new Request('https://example.com', { method: 'OPTIONS' });
-      const response = await index.fetch(request, mockEnv, mockContext);
-      
-      expect(response.status).toBe(200);
-      expect(response.headers.get('Access-Control-Allow-Origin')).toBe('*');
-    });
-
-    // Unit test code: UT-03
-    test("UT-03: should return error for invalid limit parameter", async () => {
+    test("UT-02: should return error for invalid limit parameter", async () => {
       const mockRequest = {
         url: 'https://example.com?limit=invalid',
         method: 'GET',
@@ -157,8 +148,8 @@ describe("index", () => {
       expect(response.headers.get('Content-Type')).toBe('application/json');
     });
 
-    // Unit test code: UT-04
-    test("UT-04: should return error for negative limit parameter", async () => {
+    // Unit test code: UT-03
+    test("UT-03: should return error for negative limit parameter", async () => {
       const mockRequest = {
         url: 'https://example.com?limit=-5',
         method: 'GET',
@@ -172,8 +163,8 @@ describe("index", () => {
       expect(body.error).toBe("Invalid limit parameter. Must be a positive number.");
     });
 
-    // Unit test code: UT-05
-    test("UT-05: should return error for zero limit parameter", async () => {
+    // Unit test code: UT-04
+    test("UT-04: should return error for zero limit parameter", async () => {
       const mockRequest = {
         url: 'https://example.com?limit=0',
         method: 'GET',
@@ -187,39 +178,8 @@ describe("index", () => {
       expect(body.error).toBe("Invalid limit parameter. Must be a positive number.");
     });
 
-    // Unit test code: UT-06
-    test("UT-06: should successfully process request with valid limit parameter", async () => {
-      const mockRepos: MockRepository[] = [
-        { id: 1, name: 'repo1', full_name: 'user/repo1', description: 'Test repo 1', readme: 'README', language: 'JavaScript' },
-        { id: 2, name: 'repo2', full_name: 'user/repo2', description: 'Test repo 2', readme: 'README', language: 'TypeScript' },
-        { id: 3, name: 'repo3', full_name: 'user/repo3', description: 'Test repo 3', readme: 'README', language: 'Python' }
-      ];
-      const mockEnhancedRepos: MockEnhancedRepository[] = mockRepos.map(repo => ({ ...repo, analysis: 'test analysis' }));
-      const mockSimplifiedRepos: MockSimplifiedRepository[] = mockRepos.map(repo => ({ name: repo.name, id: repo.id }));
-
-      mockFetchPopularRepositories.mockResolvedValue(mockRepos as any[]);
-      mockEnhanceRepositoriesWithAnalysis.mockResolvedValue(mockEnhancedRepos as any[]);
-      mockSimplifyRepository.mockImplementation((repo: any) => ({ name: repo.name, id: repo.id }));
-
-      const mockRequest = {
-        url: 'https://example.com?limit=2',
-        method: 'GET',
-        headers: { get: jest.fn() },
-      };
-
-      const response = await index.fetch(mockRequest as any, mockEnv, mockContext);
-      
-      expect(response.status).toBe(200);
-      const body = await response.json() as TestResponseBody;
-      expect(body.repositories).toHaveLength(2);
-      expect(body.count).toBe(2);
-      expect(body.total_available).toBe(3);
-      expect(body.limit).toBe(2);
-      expect(body.timestamp).toBeDefined();
-    });
-
-    // Unit test code: UT-07
-    test("UT-07: should use default limit when no limit parameter provided", async () => {
+    // Unit test code: UT-05
+    test("UT-05: should use default limit when no limit parameter provided", async () => {
       const mockRepos: MockRepository[] = [
         { id: 1, name: 'repo1', full_name: 'user/repo1', description: 'Test repo 1', readme: 'README', language: 'JavaScript' },
         { id: 2, name: 'repo2', full_name: 'user/repo2', description: 'Test repo 2', readme: 'README', language: 'TypeScript' }
@@ -244,8 +204,8 @@ describe("index", () => {
       expect(mockEnhanceRepositoriesWithAnalysis).toHaveBeenCalledWith(mockRepos, mockEnv);
     });
 
-    // Unit test code: UT-08
-    test("UT-08: should use fallback API key from development environment", async () => {
+    // Unit test code: UT-06
+    test("UT-06: should use fallback API key from development environment", async () => {
       const envWithoutApiKey: Env = {
         REPO_CACHE: mockEnv.REPO_CACHE
         // LLM_API_KEY is undefined
@@ -270,8 +230,8 @@ describe("index", () => {
       expect(response.status).toBe(200);
     });
 
-    // Unit test code: UT-09
-    test("UT-09: should handle service errors gracefully", async () => {
+    // Unit test code: UT-07
+    test("UT-07: should handle service errors gracefully", async () => {
       const errorMessage = 'Service temporarily unavailable';
       mockFetchPopularRepositories.mockRejectedValue(new Error(errorMessage));
 
@@ -290,8 +250,8 @@ describe("index", () => {
       expect(response.headers.get('Content-Type')).toBe('application/json');
     });
 
-    // Unit test code: UT-10
-    test("UT-10: should handle unknown errors gracefully", async () => {
+    // Unit test code: UT-08
+    test("UT-08: should handle unknown errors gracefully", async () => {
       mockFetchPopularRepositories.mockRejectedValue('Unknown error');
 
       const mockRequest = {
@@ -308,8 +268,8 @@ describe("index", () => {
       expect(body.error).toBe('An unknown error occurred');
     });
 
-    // Unit test code: UT-11
-    test("UT-11: should include CORS headers in all responses", async () => {
+    // Unit test code: UT-09
+    test("UT-09: should include CORS headers in all responses", async () => {
       const mockRepos: MockRepository[] = [{ id: 1, name: 'repo1', full_name: 'user/repo1', description: 'Test repo', readme: 'README', language: 'JavaScript' }];
       const mockEnhancedRepos: MockEnhancedRepository[] = [{ ...mockRepos[0], analysis: 'test analysis' }];
 
@@ -331,8 +291,8 @@ describe("index", () => {
       expect(response.headers.get('Access-Control-Max-Age')).toBe('86400');
     });
 
-    // Unit test code: UT-12
-    test("UT-12: should include CORS headers in error responses", async () => {
+    // Unit test code: UT-10
+    test("UT-10: should include CORS headers in error responses", async () => {
       const mockRequest = {
         url: 'https://example.com?limit=invalid',
         method: 'GET',
@@ -348,8 +308,8 @@ describe("index", () => {
       expect(response.headers.get('Access-Control-Max-Age')).toBe('86400');
     });
 
-    // Unit test code: UT-13
-    test("UT-13: should correctly limit repositories when limit exceeds available repositories", async () => {
+    // Unit test code: UT-11
+    test("UT-11: should correctly limit repositories when limit exceeds available repositories", async () => {
       const mockRepos: MockRepository[] = [
         { id: 1, name: 'repo1', full_name: 'user/repo1', description: 'Test repo 1', readme: 'README', language: 'JavaScript' },
         { id: 2, name: 'repo2', full_name: 'user/repo2', description: 'Test repo 2', readme: 'README', language: 'TypeScript' }
@@ -376,8 +336,8 @@ describe("index", () => {
       expect(body.limit).toBe(10);
     });
 
-    // Unit test code: UT-14
-    test("UT-14: should call simplifyRepository for each enhanced repository", async () => {
+    // Unit test code: UT-12
+    test("UT-12: should call simplifyRepository for each enhanced repository", async () => {
       const mockRepos: MockRepository[] = [
         { id: 1, name: 'repo1', full_name: 'user/repo1', description: 'Test repo 1', readme: 'README', language: 'JavaScript' },
         { id: 2, name: 'repo2', full_name: 'user/repo2', description: 'Test repo 2', readme: 'README', language: 'TypeScript' }

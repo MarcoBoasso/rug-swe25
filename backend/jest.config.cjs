@@ -17,5 +17,10 @@ module.exports = {
     setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
     moduleNameMapping: {
       '^@/(.*)$': '<rootDir>/src/$1'
-    }
+    },
+    // Force tests to run sequentially in order
+    runInBand: true,
+    verbose: true,
+    // Custom test sequencer to control file execution order
+    testSequencer: '<rootDir>/jest.sequencer.js'
   };

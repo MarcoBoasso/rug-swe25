@@ -3,7 +3,7 @@
     "target": "ES2020",
     "module": "CommonJS",
     "lib": ["ES2020", "WebWorker"],
-    "types": ["@cloudflare/workers-types"],
+    "types": ["@cloudflare/workers-types", "jest", "@types/node"],
     "moduleResolution": "node",
     "strict": true,
     "noImplicitAny": true,
@@ -16,8 +16,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*", "env/types.ts", "env/env.ts"],
+  "include": ["src/**/*", "env/types.ts", "env/env.ts", "tests/**/*"],
   "exclude": ["node_modules", "dist"]
 }

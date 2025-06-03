@@ -88,8 +88,8 @@ interface MockEnhancedRepository extends Partial<EnhancedRepository> {
 describe("transformer", () => {
   // Unit testing for the simplifyRepository() function
   describe("simplifyRepository()", () => {
-    // Unit test code: UT-32
-    test("UT-32: should transform repository with all fields present", () => {
+    // Unit test code: UT-30
+    test("UT-30: should transform repository with all fields present", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'test-repo',
         full_name: 'user/test-repo',
@@ -141,8 +141,8 @@ describe("transformer", () => {
       });
     });
 
-    // Unit test code: UT-33
-    test("UT-33: should handle missing owner object gracefully", () => {
+    // Unit test code: UT-31
+    test("UT-31: should handle missing owner object gracefully", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'no-owner-repo',
         full_name: 'orphan/no-owner-repo',
@@ -167,8 +167,8 @@ describe("transformer", () => {
       expect(result.full_name).toBe('orphan/no-owner-repo');
     });
 
-    // Unit test code: UT-34
-    test("UT-34: should handle partial owner object", () => {
+    // Unit test code: UT-32
+    test("UT-32: should handle partial owner object", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'partial-owner-repo',
         full_name: 'user/partial-owner-repo',
@@ -195,8 +195,8 @@ describe("transformer", () => {
       });
     });
 
-    // Unit test code: UT-35
-    test("UT-35: should convert undefined homepage to null", () => {
+    // Unit test code: UT-33
+    test("UT-33: should convert undefined homepage to null", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'no-homepage-repo',
         full_name: 'user/no-homepage-repo',
@@ -216,8 +216,8 @@ describe("transformer", () => {
       expect(result.homepage).toBeNull();
     });
 
-    // Unit test code: UT-36
-    test("UT-36: should convert undefined forks_count to 0", () => {
+    // Unit test code: UT-34
+    test("UT-34: should convert undefined forks_count to 0", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'no-forks-repo',
         full_name: 'user/no-forks-repo',
@@ -237,8 +237,8 @@ describe("transformer", () => {
       expect(result.forks_count).toBe(0);
     });
 
-    // Unit test code: UT-37
-    test("UT-37: should handle missing license object", () => {
+    // Unit test code: UT-35
+    test("UT-35: should handle missing license object", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'unlicensed-repo',
         full_name: 'user/unlicensed-repo',
@@ -258,8 +258,8 @@ describe("transformer", () => {
       expect(result.license).toBeNull();
     });
 
-    // Unit test code: UT-38
-    test("UT-38: should handle license object with missing name", () => {
+    // Unit test code: UT-36
+    test("UT-36: should handle license object with missing name", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'partial-license-repo',
         full_name: 'user/partial-license-repo',
@@ -285,8 +285,8 @@ describe("transformer", () => {
       });
     });
 
-    // Unit test code: UT-39
-    test("UT-39: should handle topics as array", () => {
+    // Unit test code: UT-37
+    test("UT-37: should handle topics as array", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'array-topics-repo',
         full_name: 'user/array-topics-repo',
@@ -306,8 +306,8 @@ describe("transformer", () => {
       expect(result.topics).toEqual(['react', 'javascript', 'frontend', 'ui']);
     });
 
-    // Unit test code: UT-40
-    test("UT-40: should handle topics as object with numbered keys", () => {
+    // Unit test code: UT-38
+    test("UT-38: should handle topics as object with numbered keys", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'object-topics-repo',
         full_name: 'user/object-topics-repo',
@@ -332,8 +332,8 @@ describe("transformer", () => {
       expect(result.topics).toEqual(['agent', 'ai', 'machine-learning', 'python']);
     });
 
-    // Unit test code: UT-41
-    test("UT-41: should handle topics object with mixed value types", () => {
+    // Unit test code: UT-39
+    test("UT-39: should handle topics object with mixed value types", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'mixed-topics-repo',
         full_name: 'user/mixed-topics-repo',
@@ -361,8 +361,8 @@ describe("transformer", () => {
       expect(result.topics).toEqual(['javascript', 'web', 'backend']);
     });
 
-    // Unit test code: UT-42
-    test("UT-42: should handle missing topics", () => {
+    // Unit test code: UT-40
+    test("UT-40: should handle missing topics", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'no-topics-repo',
         full_name: 'user/no-topics-repo',
@@ -382,8 +382,8 @@ describe("transformer", () => {
       expect(result.topics).toEqual([]);
     });
 
-    // Unit test code: UT-43
-    test("UT-43: should handle null topics", () => {
+    // Unit test code: UT-41
+    test("UT-41: should handle null topics", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'null-topics-repo',
         full_name: 'user/null-topics-repo',
@@ -403,8 +403,8 @@ describe("transformer", () => {
       expect(result.topics).toEqual([]);
     });
 
-    // Unit test code: UT-44
-    test("UT-44: should handle empty topics array", () => {
+    // Unit test code: UT-42
+    test("UT-42: should handle empty topics array", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'empty-topics-repo',
         full_name: 'user/empty-topics-repo',
@@ -424,8 +424,8 @@ describe("transformer", () => {
       expect(result.topics).toEqual([]);
     });
 
-    // Unit test code: UT-45
-    test("UT-45: should preserve null description", () => {
+    // Unit test code: UT-43
+    test("UT-43: should preserve null description", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'no-description-repo',
         full_name: 'user/no-description-repo',
@@ -444,8 +444,8 @@ describe("transformer", () => {
       expect(result.description).toBeNull();
     });
 
-    // Unit test code: UT-46
-    test("UT-46: should extract analysis category and summary correctly", () => {
+    // Unit test code: UT-44
+    test("UT-44: should extract analysis category and summary correctly", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'analysis-test-repo',
         full_name: 'user/analysis-test-repo',
@@ -465,8 +465,8 @@ describe("transformer", () => {
       expect(result.summary).toBe('A comprehensive data science toolkit with machine learning capabilities and statistical analysis features');
     });
 
-    // Unit test code: UT-47
-    test("UT-47: should format repository with partial information", () => {
+    // Unit test code: UT-45
+    test("UT-45: should format repository with partial information", () => {
       const mockRepo: MockEnhancedRepository = {
         name: 'partial-repo',
         full_name: 'user/partial-repo',
@@ -479,7 +479,6 @@ describe("transformer", () => {
           category: 'Backend',
           summary: 'A Go backend service'
         }
-        // Some fields are missing
       };
 
       const result = simplifyRepository(mockRepo as EnhancedRepository);
