@@ -117,6 +117,7 @@ export class Pager {
       .replace(/\{\{SUBCATEGORY_NAME\}\}/g, subcategory.name)
       .replace(/\{\{SUBCATEGORY_DESCRIPTION\}\}/g, subcategory.description)
       .replace(/\{\{CATEGORY_NAME\}\}/g, category.name)
+      .replace(/\{\{SUBCATEGORY_PATH\}\}/g, subcategory.path)
       .replace(/\{\{CATEGORY_COLOR\}\}/g, category.color);
     
     // Create output directory for the subcategory if it doesn't exist

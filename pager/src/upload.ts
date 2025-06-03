@@ -49,13 +49,13 @@ function uploadFile(filePath: string, key: string): Promise<void> {
     let uploadCommand = '';
     
     if (config.uploadMethod === 'binding') {
-      uploadCommand = `wrangler kv:key put --binding=${config.kvBinding} ${previewFlag} "${key}" --path="${tempFilePath}"`;
+      uploadCommand = `wrangler kv key put --binding ${config.kvBinding} ${previewFlag} "${key}" --path "${tempFilePath}" --remote`;
     } else if (config.uploadMethod === 'direct') {
       if (!config.namespaceId) {
         reject(new Error('Error: You must specify a namespaceId in the configuration to use the "direct" method'));
         return;
       }
-      uploadCommand = `wrangler kv:key put --namespace-id=${config.namespaceId} "${key}" --path="${tempFilePath}"`;
+      uploadCommand = `wrangler kv key put --namespace-id ${config.namespaceId} "${key}" --path "${tempFilePath}" --remote`;
     } else {
       reject(new Error(`Invalid upload method: ${config.uploadMethod}`));
       return;

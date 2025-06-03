@@ -1,0 +1,9 @@
+name = "api-scheduler"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[triggers]
+crons = ["0 2 * * *"]
+
+[env.production.vars]
+API_URL = "https://popular-repos-analyzer.marcoboasso02.workers.dev/?limit=500"
