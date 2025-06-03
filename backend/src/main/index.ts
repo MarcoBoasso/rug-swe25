@@ -30,7 +30,7 @@ const corsHeaders = {
 };
 
 // Handle OPTIONS requests for CORS
-function handleOptions(request: Request) {
+export function handleOptions(request: Request) {
   return new Response(null, {
     headers: corsHeaders
   });

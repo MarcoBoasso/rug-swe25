@@ -1,6 +1,6 @@
 // src/transformer.ts - New file for transforming repository data
 
-import { Repository, EnhancedRepository, SimplifiedRepository } from './types';
+import { Repository, EnhancedRepository, SimplifiedRepository } from '../../env/types';
 
 /**
  * Transforms a repository with analysis into a simplified format
