@@ -74,7 +74,7 @@ export class Pager {
 
       return `
         <!-- ${category.name} -->
-        <div class="bg-slate-800 rounded-xl p-6 shadow-lg card-hover">
+        <div class="bg-slate-800 rounded-xl p-6 shadow-lg card-hover category-card">
           <div class="flex items-center mb-6">
             <div class="w-12 h-12 bg-${category.color}-500 rounded-lg flex items-center justify-center mr-4">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">

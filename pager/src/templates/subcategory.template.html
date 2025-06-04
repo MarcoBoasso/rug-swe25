@@ -8,22 +8,22 @@
     <!-- SEO Meta Tags -->
     <meta name="description" content="Trending {{SUBCATEGORY_NAME}} repos on GitHub. {{SUBCATEGORY_DESCRIPTION}}. Best {{CATEGORY_NAME}} open-source projects.">
     <meta name="keywords" content="{{SUBCATEGORY_NAME}}, {{CATEGORY_NAME}}, GitHub repositories, open source, trending repos, programming, development tools, {{SUBCATEGORY_NAME}} projects">
-    <meta name="author" content="Hot ForGithub">
+    <meta name="author" content="Hot forGitHub">
     
     <!-- Canonical URL -->
     <link rel="canonical" href="https://hotforgithub.com/{{SUBCATEGORY_PATH}}">
     
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="{{SUBCATEGORY_NAME}} Repositories - {{CATEGORY_NAME}} | Hot ForGithub">
+    <meta property="og:title" content="{{SUBCATEGORY_NAME}} Repositories - {{CATEGORY_NAME}} | Hot forGitHub">
     <meta property="og:description" content="Trending {{SUBCATEGORY_NAME}} repos on GitHub. {{SUBCATEGORY_DESCRIPTION}}. Best {{CATEGORY_NAME}} open-source projects.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://hotforgithub.com/{{SUBCATEGORY_PATH}}">
     <meta property="og:image" content="https://hotforgithub.com/og-image.png">
-    <meta property="og:site_name" content="Hot ForGithub">
+    <meta property="og:site_name" content="Hot forGitHub">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{SUBCATEGORY_NAME}} Repositories - {{CATEGORY_NAME}} | Hot ForGithub">
+    <meta name="twitter:title" content="{{SUBCATEGORY_NAME}} Repositories - {{CATEGORY_NAME}} | Hot forGitHub">
     <meta name="twitter:description" content="Trending {{SUBCATEGORY_NAME}} repos on GitHub. {{SUBCATEGORY_DESCRIPTION}}. Best {{CATEGORY_NAME}} open-source projects.">
     <meta name="twitter:image" content="https://hotforgithub.com/og-image.png">
     
@@ -38,6 +38,9 @@
         }
         .repo-card-hover {
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         .filter-btn.active {
             position: relative;
@@ -75,37 +78,31 @@
         .tool-btn:hover {
             transform: translateY(-2px);
         }
-        .tooltip {
-            position: relative;
+        #language-select {
+            background-color: #334155 !important;
+            color: #d1d5db !important;
         }
-        .tooltip:before {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            margin-bottom: 5px;
-            padding: 5px 10px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            border-radius: 4px;
-            font-size: 12px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s ease;
+        #language-select option {
+            background-color: #334155 !important;
+            color: #d1d5db !important;
         }
-        .tooltip:hover:before {
-            opacity: 1;
-            visibility: visible;
+        .card-content {
+            flex: 1;
+        }
+        .tools-section {
+            margin-top: auto;
+        }
+        .tags-container {
+            display: flex;
+            overflow: hidden;
         }
     </style>
 </head>
 <body class="gradient-bg text-gray-100 min-h-screen">
     <header class="container mx-auto py-6 px-4">
         <div class="flex justify-between items-center">
-            <a href="/" class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-                Hot ForGithub
+            <a href="/" class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-400 hover:text-white transition-colors">
+                Hot forGitHub
             </a>
             <nav>
                 <a href="/" class="text-gray-300 hover:text-white">Home</a>
@@ -116,7 +113,7 @@
     <main class="container mx-auto px-4 py-10">
         <div class="text-center mb-12">
             <h1 class="text-4xl font-bold mb-4 capitalize">
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-{{CATEGORY_COLOR}}-400 to-{{CATEGORY_COLOR}}-600">
+                <span class="text-{{CATEGORY_COLOR}}-400">
                     {{SUBCATEGORY_NAME}}
                 </span>
             </h1>
@@ -217,7 +214,7 @@
     <footer class="container mx-auto px-4 py-8 border-t border-gray-800 mt-12">
         <div class="flex flex-col md:flex-row justify-between items-center">
             <div class="mb-4 md:mb-0">
-                <p class="text-gray-400">© 2025 Hot ForGithub</p>
+                <p class="text-gray-400">© 2025 Hot forGitHub</p>
             </div>
             <div class="flex space-x-6">
                 <a href="#" class="text-gray-400 hover:text-white transition-colors">About</a>
@@ -453,7 +450,7 @@
             repositories.forEach(repo => {
                 // Create a repository card
                 const card = document.createElement('div');
-                card.className = 'bg-slate-800 rounded-lg p-6 shadow-lg repo-card-hover mb-6';
+                card.className = 'bg-slate-800 rounded-lg p-6 shadow-lg repo-card-hover';
                 
                 // Format the date
                 const createdDate = new Date(repo.created_at);
@@ -465,83 +462,76 @@
                 
                 // Create the card HTML
                 card.innerHTML = `
-                    <div class="flex items-center mb-4">
-                        <img src="${repo.owner.avatar_url}" alt="${repo.owner.login}" class="w-10 h-10 rounded-full mr-3">
-                        <div>
-                            <h3 class="font-bold text-lg">
-                                <a href="https://github.com/${repo.full_name}" target="_blank" class="hover:text-${categoryInfo.color}-400 transition-colors">
-                                    ${repo.name}
-                                </a>
-                            </h3>
-                            <p class="text-sm text-gray-400">${repo.owner.login} ${repo.owner.type === 'Organization' ? '(Org)' : ''}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex justify-between mb-4">
-                        <div class="flex items-center space-x-4">
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-300 mr-1" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/>
-                                </svg>
-                                <span>${formatNumber(repo.stargazers_count)}</span>
-                            </div>
-                            <div class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                </svg>
-                                <span>${formatNumber(repo.forks_count)}</span>
+                    <div class="card-content">
+                        <div class="flex items-center mb-4">
+                            <img src="${repo.owner.avatar_url}" alt="${repo.owner.login}" class="w-10 h-10 rounded-full mr-3">
+                            <div>
+                                <h3 class="font-bold text-lg">
+                                    <a href="https://github.com/${repo.full_name}" target="_blank" class="hover:text-${categoryInfo.color}-400 transition-colors">
+                                        ${repo.name}
+                                    </a>
+                                </h3>
+                                <p class="text-sm text-gray-400">${repo.owner.login} ${repo.owner.type === 'Organization' ? '(Org)' : ''}</p>
                             </div>
                         </div>
-                        <span class="text-xs px-2 py-1 bg-${categoryInfo.color}-500 bg-opacity-20 text-${categoryInfo.color}-300 rounded-full">
-                            ${repo.language || 'N/A'}
-                        </span>
+                        
+                        <div class="flex justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-300 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/>
+                                    </svg>
+                                    <span>${formatNumber(repo.stargazers_count)}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                    </svg>
+                                    <span>${formatNumber(repo.forks_count)}</span>
+                                </div>
+                            </div>
+                            <span class="text-xs px-2 py-1 bg-${categoryInfo.color}-500 bg-opacity-20 text-${categoryInfo.color}-300 rounded-full">
+                                ${repo.language || 'N/A'}
+                            </span>
+                        </div>
+                        
+                        <div class="mb-4 flex justify-between text-xs text-gray-400">
+                            <span>Created: ${formattedDate}</span>
+                            ${repo.license ? `<span>License: ${repo.license.name}</span>` : ''}
+                        </div>
+                        
+                        <!-- Summary displayed in full (not truncated) -->
+                        ${repo.summary ? `
+                        <div class="mt-4 pt-4 border-t border-gray-700">
+                            <p class="text-sm text-gray-300">${repo.summary}</p>
+                        </div>` : ''}
+                        
+                        <!-- Tags section - only show first 3 tags -->
+                        ${repo.topics && repo.topics.length > 0 ? `
+                        <div class="mt-4 mb-6">
+                            <div class="tags-container flex gap-2">
+                                ${repo.topics.slice(0, 3).map(topic => 
+                                    `<span class="text-xs px-2 py-1 bg-${categoryInfo.color}-900 bg-opacity-30 text-${categoryInfo.color}-300 rounded-full whitespace-nowrap">${topic}</span>`
+                                ).join('')}
+                            </div>
+                        </div>` : `
+                        <!-- Add spacing when no tags are present -->
+                        <div class="mb-6"></div>`}
                     </div>
                     
-                    <div class="mb-4 flex justify-between text-xs text-gray-400">
-                        <span>Created: ${formattedDate}</span>
-                        ${repo.license ? `<span>License: ${repo.license.name}</span>` : ''}
-                    </div>
-                    
-                    <!-- Summary displayed in full (not truncated) -->
-                    ${repo.summary ? `
-                    <div class="mt-4 pt-4 border-t border-gray-700">
-                        <p class="text-sm text-gray-300">${repo.summary}</p>
-                    </div>` : ''}
-                    
-                    ${repo.topics && repo.topics.length > 0 ? `
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        ${repo.topics.slice(0, 5).map(topic => 
-                            `<span class="text-xs px-2 py-1 bg-${categoryInfo.color}-900 bg-opacity-30 text-${categoryInfo.color}-300 rounded-full">${topic}</span>`
-                        ).join('')}
-                        ${repo.topics.length > 5 ? `<span class="text-xs px-2 py-1 bg-gray-700 bg-opacity-30 text-gray-400 rounded-full">+${repo.topics.length - 5} more</span>` : ''}
-                    </div>` : ''}
-                    
-                    <!-- Tools section -->
-                    <div class="mt-5 pt-4 border-t border-gray-700">
+                    <!-- Tools section - sticky at bottom -->
+                    <div class="tools-section mt-8 pt-4 border-t border-gray-700">
                         <div class="flex items-center justify-between">
                             <span class="text-xs text-gray-500">Tools:</span>
-                            <div class="flex space-x-3">
-                                <a href="https://gitdiagram.com/${repo.owner.login}/${repo.name}" target="_blank" class="tool-btn tooltip" data-tooltip="View repository diagram">
-                                    <div class="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-900 bg-opacity-30 text-indigo-300 hover:bg-opacity-50 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3m0 0l3 3m-3-3v12m6-2v2a2 2 0 01-2 2H7a2 2 0 01-2-2v-2m2-4h.01M17 16h.01" />
-                                        </svg>
-                                    </div>
+                            <div class="flex space-x-2">
+                                <a href="https://gitdiagram.com/${repo.owner.login}/${repo.name}" target="_blank" class="tool-btn px-3 py-1 rounded-md bg-indigo-900 bg-opacity-30 text-indigo-300 hover:bg-opacity-50 transition-colors text-xs font-medium">
+                                    Diagram
                                 </a>
-                                <a href="https://uithub.com/${repo.owner.login}/${repo.name}" target="_blank" class="tool-btn tooltip" data-tooltip="Get code for LLM prompt">
-                                    <div class="w-8 h-8 flex items-center justify-center rounded-full bg-green-900 bg-opacity-30 text-green-300 hover:bg-opacity-50 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                                        </svg>
-                                    </div>
+                                <a href="https://uithub.com/${repo.owner.login}/${repo.name}" target="_blank" class="tool-btn px-3 py-1 rounded-md bg-green-900 bg-opacity-30 text-green-300 hover:bg-opacity-50 transition-colors text-xs font-medium">
+                                    Context
                                 </a>
-                                <a href="https://forgithub.com/${repo.owner.login}/${repo.name}" target="_blank" class="tool-btn tooltip" data-tooltip="Repository tools">
-                                    <div class="w-8 h-8 flex items-center justify-center rounded-full bg-${categoryInfo.color}-900 bg-opacity-30 text-${categoryInfo.color}-300 hover:bg-opacity-50 transition-colors">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                    </div>
+                                <a href="https://forgithub.com/${repo.owner.login}/${repo.name}" target="_blank" class="tool-btn px-3 py-1 rounded-md bg-${categoryInfo.color}-900 bg-opacity-30 text-${categoryInfo.color}-300 hover:bg-opacity-50 transition-colors text-xs font-medium">
+                                    More Tools
                                 </a>
                             </div>
                         </div>
