@@ -1,7 +1,7 @@
 // @ts-nocheck
 import fs from 'fs';
 import path from 'path';
-import { Pager } from "../../../pager/src/pager";
+import { Pager } from "../src/pager";
 
 // Mock fs module
 jest.mock('fs');
