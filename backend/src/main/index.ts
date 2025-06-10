@@ -39,7 +39,6 @@ export function handleOptions(request: Request) {
 // Main worker handler
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    // Handle preflight OPTIONS request for CORS
     if (request.method === "OPTIONS") {
       return handleOptions(request);
     }
@@ -49,7 +48,6 @@ export default {
       const url = new URL(request.url);
       const limitParam = url.searchParams.get('limit');
       
-      // Default to configured repositories limit if no limit is specified
       const limit = limitParam ? parseInt(limitParam, 10) : DEV_CONFIG.defaultRepoLimit;
       
       // Validate limit parameter
@@ -65,29 +63,23 @@ export default {
         });
       }
       
-      // Fetch popular repositories
       const repositories = await fetchPopularRepositories(env);
       
-      // Limit to the specified number of repositories
       const limitedRepos = repositories.slice(0, limit);
       
-      // Use API key from environment variable or fallback to development key
-      const apiKey = env.LLM_API_KEY || DEV_LLM_API_KEY;
+      const apiKey = env.LLM_API_KEY || DEV_LLM_API_KEY;  // Use environment variable or development config
       
       if (!apiKey) {
         throw new Error('LLM API key is not configured. Set it using wrangler secret or in env.ts for development.');
       }
       
-      // Create a new environment object with the guaranteed API key
       const enhancedEnv: Env = {
         ...env,
         LLM_API_KEY: apiKey
       };
       
-      // Enhance repositories with analysis (fetch from cache or generate new)
       const enhancedRepos = await enhanceRepositoriesWithAnalysis(limitedRepos, enhancedEnv);
       
-      // Transform repositories to simplified format
       const simplifiedRepos = enhancedRepos.map(repo => simplifyRepository(repo));
       
       // Return the result

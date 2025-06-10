@@ -61,17 +61,13 @@ export async function generateRepositoryAnalysis(
   apiKey: string
 ): Promise<RepositoryAnalysis> {
   try {
-    // Prepare input for the LLM by formatting relevant repository data
     const input = formatRepositoryForLLM(repo);
     
-    // Call the LLM with the prepared input
     const result = await callDeepseekAPI(input, apiKey);
     
-    // Parse the LLM result to extract category and summary
     return parseAnalysisResult(result, repo.name);
   } catch (error) {
     console.error(`Error analyzing repository ${repo.name}:`, error);
-    // Return fallback analysis on error
     return {
       category: "Unknown",
       summary: `Analysis unavailable for ${repo.name}. Please try again later.`
@@ -93,12 +89,11 @@ export async function callDeepseekAPI(
   input: string,
   apiKey: string
 ): Promise<string> {
-  // Truncate the input if necessary (simple estimation)
+
   const truncatedInput = truncateInput(input, 30000);
   
   const config = LLM_CONFIG.deepseek;
   
-  // Implement retry logic
   let retries = 0;
   let delay = LLM_CONFIG.retry.initialDelayMs;
   
@@ -131,24 +126,19 @@ export async function callDeepseekAPI(
         throw new Error(`Deepseek API returned ${response.status}: ${errorText}`);
       }
     
-      // Parse response with proper typing
       const data = await response.json() as DeepseekAPIResponse;
       
-      // Now TypeScript knows the structure of data.choices
       return data.choices[0].message.content;
     } catch (error) {
       retries++;
       
-      // If max retries reached, throw the error
       if (retries > LLM_CONFIG.retry.maxRetries) {
         throw error;
       }
-      
-      // Otherwise wait and retry
+
       console.log(`Retry ${retries}/${LLM_CONFIG.retry.maxRetries} for Deepseek API call after ${delay}ms`);
       await new Promise(resolve => setTimeout(resolve, delay));
       
-      // Increase delay for next retry using backoff factor
       delay *= LLM_CONFIG.retry.backoffFactor;
     }
   }
@@ -185,12 +175,10 @@ export function truncateInput(input: string, maxTokens: number): string {
  */
 export function parseAnalysisResult(result: string, repoName: string): RepositoryAnalysis {
   try {
-    // Try to parse the result as JSON
     return JSON.parse(result);
   } catch (error) {
     console.error(`Error parsing analysis result for ${repoName}:`, error);
     
-    // Attempt to extract category and summary using regex
     const categoryMatch = result.match(/category["']?\s*:\s*["']([^"']+)["']/i);
     const summaryMatch = result.match(/summary["']?\s*:\s*["']([^"']+)["']/i);
     

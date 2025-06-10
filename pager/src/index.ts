@@ -19,8 +19,7 @@ function main() {
   
   // Parse command line arguments
   const args = process.argv.slice(2);
-  
-  // Check for help flag
+
   if (args.includes('--help') || args.includes('-h')) {
     printHelp();
     return;
@@ -99,5 +98,4 @@ Examples:
   `);
 }
 
-// Run the application
 main();

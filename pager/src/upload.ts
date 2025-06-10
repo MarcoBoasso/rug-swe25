@@ -3,9 +3,8 @@ import path from 'path';
 import { exec } from 'child_process';
 import * as os from 'os';
 
-// Configuration - CUSTOMIZE THESE VALUES
+
 const config = {
-  // Directory where the generated HTML files are located
   pagesDir: process.env.PAGES_DIR || path.join(process.cwd(), 'output'),
   
   // Upload method: 'binding' or 'direct'
@@ -17,7 +16,6 @@ const config = {
   kvBinding: 'PAGES',
   
   // If uploadMethod is 'direct', this is the KV namespace ID
-  // REPLACE WITH YOUR OWN ID
   namespaceId: '2b2cde8ad3374a99bc9146383b2a2537',
   
   // Use preview namespace instead of production?

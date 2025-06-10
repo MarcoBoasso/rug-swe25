@@ -24,7 +24,6 @@ export async function fetchPopularRepositories(env: Env): Promise<Repository[]> 
       console.log(`Attempting to get popular repositories`);
     }
     
-    // Try to get repositories from cache first
     const cachedRepos = await getPopularReposFromCache(env);
     
     // If found in cache and not expired, return them
@@ -50,17 +49,14 @@ export async function fetchPopularRepositories(env: Env): Promise<Repository[]> 
       throw new Error(`Popular repos API returned ${response.status}: ${await response.text()}`);
     }
     
-    // Type assertion for the response data
     const data = await response.json() as PopularRepositoriesResponse;
     
     if (DEV_CONFIG.enableVerboseLogging) {
       console.log(`Fetched ${data.repositories.length} repositories from API`);
     }
     
-    // Store in cache for future requests
     await storePopularReposInCache(data.repositories, env);
     
-    // Return the repositories
     return data.repositories;
   } catch (error) {
     console.error('Error fetching popular repositories:', error);
@@ -86,15 +82,12 @@ export async function enhanceRepositoriesWithAnalysis(
     console.log(`Enhancing ${repositories.length} repositories with analysis`);
   }
   
-  // Check for API key
   const apiKey = env.LLM_API_KEY;
   if (!apiKey) {
     throw new Error('LLM API key is required for repository analysis');
   }
   
-  // Process repositories in parallel with Promise.all
   return await Promise.all(repositories.map(async (repo) => {
-    // Create cache key based on repo name and last update time
     const cacheKey = `repo:${repo.full_name}:${repo.updated_at}`;
     
     try {
@@ -115,7 +108,6 @@ export async function enhanceRepositoriesWithAnalysis(
         console.log(`Cache hit for ${repo.full_name}`);
       }
       
-      // Return enhanced repository with analysis
       return {
         ...repo,
         analysis
@@ -123,7 +115,7 @@ export async function enhanceRepositoriesWithAnalysis(
     } catch (error) {
       console.error(`Error enhancing repository ${repo.name}:`, error);
       
-      // Provide fallback analysis on error
+      // fallback analysis on error
       const fallbackAnalysis: RepositoryAnalysis = {
         category: "Unknown",
         summary: `Analysis unavailable for ${repo.name}. Please try again later.`

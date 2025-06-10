@@ -6,10 +6,7 @@ import { DEV_CONFIG } from '../../env/env';
 
 // Cache configuration
 export const CACHE_CONFIG: CacheConfig = {
-  // TTL for cached repository analysis in seconds (24 hours)
-  analysisTTL: DEV_CONFIG.analysisCacheTTL || 86400,
-  
-  // TTL for cached popular repositories list in seconds (24 hours)
+  analysisTTL: DEV_CONFIG.analysisCacheTTL || 864000,
   popularReposTTL: DEV_CONFIG.popularReposCacheTTL || 86400
 };
 
@@ -50,7 +47,7 @@ export async function getAnalysisFromCache(
     return null;
   } catch (error) {
     console.error('Error retrieving from cache:', error);
-    return null; // On error, we'll just regenerate the analysis
+    return null;
   }
 }
 
@@ -76,7 +73,7 @@ export async function storeAnalysisInCache(
       return;
     }
     
-    // Store the analysis in KV cache with the configured TTL
+    // Store the analysis in KV 
     await env.REPO_CACHE.put(
       cacheKey,
       JSON.stringify(analysis),
@@ -88,7 +85,7 @@ export async function storeAnalysisInCache(
     }
   } catch (error) {
     console.error('Error storing in cache:', error);
-    // Continue even if caching fails
+    // Continue
   }
 }
 
@@ -109,10 +106,9 @@ export async function getPopularReposFromCache(
       return null;
     }
     
-    // Get cache key
     const cacheKey = DEV_CONFIG.popularReposCacheKey;
     
-    // Check if we should refresh the cache (after API refresh time)
+
     if (await shouldRefreshCache(env)) {
       if (DEV_CONFIG.enableVerboseLogging) {
         console.log('Cache refresh time reached, forcing refresh');
@@ -123,7 +119,6 @@ export async function getPopularReposFromCache(
     // Attempt to retrieve value from KV cache
     const cachedRepos = await env.REPO_CACHE.get(cacheKey);
     
-    // If found in cache, parse and return the repositories
     if (cachedRepos) {
       if (DEV_CONFIG.enableVerboseLogging) {
         console.log(`Popular repos cache hit for ${cacheKey}`);
@@ -131,7 +126,6 @@ export async function getPopularReposFromCache(
       return JSON.parse(cachedRepos);
     }
     
-    // Not found in cache
     if (DEV_CONFIG.enableVerboseLogging) {
       console.log(`Popular repos cache miss for ${cacheKey}`);
     }
@@ -160,10 +154,8 @@ export async function storePopularReposInCache(
       return;
     }
     
-    // Get cache key
     const cacheKey = DEV_CONFIG.popularReposCacheKey;
     
-    // Store the repositories in KV cache with the configured TTL
     await env.REPO_CACHE.put(
       cacheKey,
       JSON.stringify(repositories),
@@ -174,7 +166,7 @@ export async function storePopularReposInCache(
       console.log(`Cached ${repositories.length} popular repositories with TTL ${CACHE_CONFIG.popularReposTTL}s`);
     }
     
-    // Also store the last refresh time
+    // store the last refresh time
     await env.REPO_CACHE.put(
       `${cacheKey}-last-refresh`,
       new Date().toISOString(),
@@ -182,7 +174,7 @@ export async function storePopularReposInCache(
     );
   } catch (error) {
     console.error('Error storing popular repos in cache:', error);
-    // Continue even if caching fails
+    // Continue
   }
 }
 
@@ -196,17 +188,13 @@ async function shouldRefreshCache(env: Env): Promise<boolean> {
   const currentHour = now.getUTCHours();
   const currentMinute = now.getUTCMinutes();
   
-  // Check if we're after the refresh hour and buffer
   const refreshHour = DEV_CONFIG.apiRefreshHour;
   const refreshBuffer = DEV_CONFIG.apiRefreshBuffer;
   
-  // If we're at the refresh hour and past the buffer minutes
   const isRefreshTime = (currentHour === refreshHour && currentMinute >= refreshBuffer);
   
-  // Or if we're after the refresh hour
   const isAfterRefreshHour = (currentHour > refreshHour);
   
-  // Is it time to refresh?
   const isTimeToRefresh = isRefreshTime || isAfterRefreshHour;
   
   if (DEV_CONFIG.enableVerboseLogging) {
@@ -215,15 +203,12 @@ async function shouldRefreshCache(env: Env): Promise<boolean> {
     console.log(`Is refresh time: ${isRefreshTime}, Is after refresh hour: ${isAfterRefreshHour}`);
   }
   
-  // If it's not even time to refresh, no need to check further
   if (!isTimeToRefresh) {
     return false;
   }
   
-  // Check if today's refresh has already happened
   const alreadyRefreshed = await hasRefreshedToday(env);
   
-  // We should refresh if it's time to refresh and we haven't already refreshed today
   const shouldRefresh = isTimeToRefresh && !alreadyRefreshed;
   
   if (DEV_CONFIG.enableVerboseLogging) {
@@ -241,36 +226,29 @@ async function shouldRefreshCache(env: Env): Promise<boolean> {
  */
 async function hasRefreshedToday(env: Env): Promise<boolean> {
   try {
-    // Check if KV namespace is available
     if (!env.REPO_CACHE) {
       return false;
     }
     
-    // Get cache key for last refresh timestamp
     const lastRefreshKey = `${DEV_CONFIG.popularReposCacheKey}-last-refresh`;
     
-    // Get the last refresh timestamp from cache
     const lastRefreshTimestamp = await env.REPO_CACHE.get(lastRefreshKey);
     
-    // If no timestamp found, cache has not been refreshed
     if (!lastRefreshTimestamp) {
       if (DEV_CONFIG.enableVerboseLogging) {
         console.log('No last refresh timestamp found, cache needs refresh');
       }
       return false;
     }
-    
-    // Parse the timestamp
+
     const lastRefresh = new Date(lastRefreshTimestamp);
     const now = new Date();
-    
-    // Check if the timestamp is from today
+
     const isSameDay = 
       lastRefresh.getUTCFullYear() === now.getUTCFullYear() &&
       lastRefresh.getUTCMonth() === now.getUTCMonth() &&
       lastRefresh.getUTCDate() === now.getUTCDate();
-    
-    // Check if the last refresh was after today's refresh time
+
     const lastRefreshHour = lastRefresh.getUTCHours();
     const lastRefreshMinute = lastRefresh.getUTCMinutes();
     

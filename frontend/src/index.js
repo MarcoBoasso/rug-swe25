@@ -18,7 +18,6 @@ async function handleRequest(request) {
 
   // Handle static asset requests (CSS, JS, images)
   if (path.match(/\.(css|js|ico|png|jpe?g|gif|svg)$/)) {
-    // Handle static assets (if you have them in KV)
     try {
       const asset = await PAGES.get(path.substring(1), { type: 'arrayBuffer' });
       if (asset) {
@@ -53,10 +52,8 @@ async function handleRequest(request) {
     const subcategory = path.substring(1); // Remove initial slash
     
     try {
-      // First look for specific subcategory page
       let subcategoryPage = await PAGES.get(`${subcategory}.html`);
       
-      // If it doesn't exist, use the empty template page
       if (!subcategoryPage) {
         subcategoryPage = await PAGES.get('template.html');
         
@@ -79,7 +76,7 @@ async function handleRequest(request) {
     }
   }
 
-  // If we get here, the page was not found
+  // If the page was not found
   return new Response('Page not found', { 
     status: 404,
     headers: { 'Content-Type': 'text/html; charset=utf-8' }
